@@ -1,0 +1,1393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Agentic AI Workflows · UPenn AI Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3EEE5;
+    --paper-2:#EBE4D6;
+    --ink:#141210;
+    --ink-2:#2A2622;
+    --muted:#6E6659;
+    --rule:#1C1915;
+    --accent:#B8502A;          /* terracotta */
+    --accent-soft:#E8B49A;
+    --sage:#5C7A5E;
+    --paper-dark:#1A1714;
+    --paper-dark-2:#2A2622;
+    --good:#3E6A48;
+    --bad:#9E2A1E;
+  }
+  html,body{margin:0;padding:0;background:#000;color:var(--ink);font-family:'IBM Plex Sans',-apple-system,Helvetica,sans-serif;}
+  deck-stage{background:#000;}
+
+  .slide{
+    background:var(--paper);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    padding:100px;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-weight:400;
+    font-feature-settings:"ss01","cv01";
+    position:relative;
+  }
+  .slide.dark{background:var(--paper-dark);color:var(--paper);}
+  .slide.accent{background:var(--accent);color:#F8F2EA;}
+  .slide.sage{background:var(--sage);color:#F3EEE5;}
+
+  .t-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:22px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--muted);}
+  .slide.dark .t-eyebrow, .slide.accent .t-eyebrow, .slide.sage .t-eyebrow{color:rgba(255,255,255,.65);}
+  .t-display{font-family:'Instrument Serif',serif;font-weight:400;font-size:180px;line-height:.92;letter-spacing:-.02em;}
+  .t-title{font-family:'Instrument Serif',serif;font-weight:400;font-size:88px;line-height:1.02;letter-spacing:-.015em;}
+  .t-title-sm{font-family:'Instrument Serif',serif;font-weight:400;font-size:72px;line-height:1.02;letter-spacing:-.01em;}
+  .t-section-num{font-family:'Instrument Serif',serif;font-style:italic;font-size:56px;color:var(--accent);}
+  .t-subtitle{font-size:34px;line-height:1.2;font-weight:400;letter-spacing:-.005em;}
+  .t-body{font-size:30px;line-height:1.4;font-weight:400;}
+  .t-body-lg{font-size:30px;line-height:1.35;font-weight:400;}
+  .t-small{font-size:24px;line-height:1.45;font-weight:400;}
+  .t-mono{font-family:'IBM Plex Mono',monospace;font-size:22px;line-height:1.5;}
+  .t-mono-sm{font-family:'IBM Plex Mono',monospace;font-size:18px;line-height:1.55;}
+
+  em, .italic{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;}
+
+  .chrome{display:flex;justify-content:space-between;align-items:baseline;font-family:'IBM Plex Mono',monospace;font-size:20px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .chrome .left{display:flex;gap:36px;}
+  .slide.dark .chrome, .slide.accent .chrome, .slide.sage .chrome{color:rgba(255,255,255,.55);}
+  .chrome .dot{display:inline-block;width:10px;height:10px;background:var(--accent);border-radius:50%;transform:translateY(1px);margin-right:14px;}
+
+  .foot{position:absolute;left:100px;right:100px;bottom:56px;display:flex;justify-content:space-between;align-items:baseline;font-family:'IBM Plex Mono',monospace;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .slide.dark .foot, .slide.accent .foot, .slide.sage .foot{color:rgba(255,255,255,.55);}
+
+  .rule{height:1px;background:currentColor;opacity:.18;}
+  .rule-thick{height:2px;background:var(--ink);}
+  .slide.dark .rule-thick,.slide.accent .rule-thick,.slide.sage .rule-thick{background:currentColor;}
+
+  .flex-row{display:flex;flex-direction:row;}
+  .flex-col{display:flex;flex-direction:column;}
+  .grow{flex:1;}
+  .gap-xs{gap:16px;}.gap-sm{gap:24px;}.gap-md{gap:40px;}.gap-lg{gap:56px;}
+  .body{flex:1;display:flex;flex-direction:column;margin-top:36px;min-height:0;}
+  .body.flex-row{flex-direction:row;}
+
+  /* Tables */
+  table.k{width:100%;border-collapse:collapse;font-size:24px;}
+  table.k th, table.k td{text-align:left;padding:16px 20px;border-bottom:1px solid rgba(20,18,16,.14);vertical-align:top;line-height:1.35;}
+  table.k th{font-family:'IBM Plex Mono',monospace;font-size:17px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:500;border-bottom:2px solid var(--ink);padding-bottom:14px;}
+  table.k td.label{font-weight:500;width:22%;color:var(--ink);}
+  table.k td.old{color:var(--muted);}
+  table.k td.new{color:var(--ink);font-weight:500;}
+  table.k .accent{color:var(--accent);font-weight:500;}
+  table.k.compact th, table.k.compact td{padding:12px 16px;font-size:21px;}
+  table.k.dark th{color:rgba(255,255,255,.55);border-bottom-color:rgba(255,255,255,.6);}
+  table.k.dark td{border-bottom-color:rgba(255,255,255,.12);}
+  table.k.dark td.old{color:rgba(255,255,255,.6);}
+  table.k.dark td.new{color:var(--paper);}
+  table.k.dark td.label{color:var(--paper);}
+
+  /* Title/section */
+  .hero-title{font-family:'Instrument Serif',serif;font-size:240px;line-height:.9;letter-spacing:-.025em;}
+  .hero-sub{font-size:34px;font-weight:400;letter-spacing:.01em;}
+
+  /* Tree */
+  .tree{font-family:'IBM Plex Mono',monospace;font-size:20px;line-height:1.65;color:var(--ink);white-space:pre;}
+  .slide.dark .tree{color:var(--paper);}
+  .tree .c{color:var(--accent);}
+  .tree .mt{color:var(--muted);}
+
+  /* Cards */
+  .card{border:1.5px solid var(--ink);padding:28px;background:transparent;}
+  .card .head{font-family:'IBM Plex Mono',monospace;font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  .card h3{margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:38px;line-height:1.05;letter-spacing:-.01em;}
+  .card p{margin:12px 0 0;font-size:20px;line-height:1.4;}
+  .card.accent-bg{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .card.accent-bg .head{color:rgba(255,255,255,.55);}
+  .card.good{border-color:var(--good);}
+  .card.good .head{color:var(--good);}
+  .card.bad{border-color:var(--bad);}
+  .card.bad .head{color:var(--bad);}
+
+  /* Chip */
+  .chip{display:inline-flex;align-items:baseline;gap:10px;padding:8px 16px;border:1px solid var(--ink);border-radius:999px;font-family:'IBM Plex Mono',monospace;font-size:17px;letter-spacing:.08em;text-transform:uppercase;}
+  .slide.dark .chip{border-color:rgba(255,255,255,.35);}
+
+  /* Big quote */
+  .big-quote{font-family:'Instrument Serif',serif;font-style:italic;font-size:128px;line-height:1.02;letter-spacing:-.015em;}
+
+  /* Layer num */
+  .layer-num{font-family:'Instrument Serif',serif;font-size:320px;line-height:.85;color:var(--accent);letter-spacing:-.03em;}
+
+  /* Terminal */
+  .term{background:#0E0C0A;color:#EFE7D7;padding:32px 38px;font-family:'IBM Plex Mono',monospace;font-size:20px;line-height:1.6;border:1px solid rgba(255,255,255,.08);}
+  .term .p{color:var(--accent-soft);}
+  .term .m{color:#6E8C6E;}
+  .term .d{color:#8A8070;}
+  .term .x{color:#C96A5A;}
+  .term .u{color:#A8B3C9;}
+
+  /* Context bars */
+  .bar{position:relative;height:32px;background:rgba(20,18,16,.08);border:1px solid rgba(20,18,16,.18);}
+  .bar > i{display:block;height:100%;background:var(--accent);}
+  .bar.rot > i{background:var(--bad);}
+
+  .mark{font-family:'IBM Plex Mono',monospace;font-size:20px;letter-spacing:.16em;text-transform:uppercase;}
+
+  /* Step list */
+  .step{display:grid;grid-template-columns:80px 1fr auto;gap:40px;align-items:baseline;padding:22px 0;border-top:1px solid rgba(20,18,16,.15);}
+  .step .n{font-family:'Instrument Serif',serif;font-size:44px;color:var(--accent);line-height:1;}
+  .step .t{font-size:28px;}
+  .step .o{font-family:'IBM Plex Mono',monospace;font-size:17px;text-transform:uppercase;color:var(--muted);letter-spacing:.1em;}
+
+  /* Concentric rings for safety envelope */
+  .rings{width:600px;height:600px;border-radius:50%;background:radial-gradient(circle at center, var(--paper) 0 33%, var(--paper-2) 33% 34%, var(--paper) 34% 66%, var(--paper-2) 66% 67%, var(--paper) 67% 100%);position:relative;border:2px solid var(--ink);flex-shrink:0;}
+  .rings::before,.rings::after{content:"";position:absolute;border-radius:50%;border:2px solid var(--ink);}
+  .rings::before{inset:100px;}.rings::after{inset:200px;}
+
+  .cite{font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:24px;}
+
+  /* Thin bullet list */
+  .bullets{list-style:none;padding:0;margin:0;}
+  .bullets li{font-size:28px;line-height:1.4;padding:14px 0;border-top:1px solid rgba(20,18,16,.12);padding-left:40px;position:relative;}
+  .bullets li:last-child{border-bottom:1px solid rgba(20,18,16,.12);}
+  .bullets li::before{content:"";position:absolute;left:0;top:28px;width:22px;height:1px;background:var(--accent);}
+  .slide.dark .bullets li{border-color:rgba(255,255,255,.15);}
+  .slide.dark .bullets li:last-child{border-color:rgba(255,255,255,.15);}
+
+  /* Checklist */
+  .checklist{display:flex;flex-direction:column;gap:0;}
+  .checklist > div{display:grid;grid-template-columns:48px 56px 1fr;gap:24px;align-items:baseline;padding:12px 0;border-top:1px solid rgba(20,18,16,.15);}
+  .checklist > div:last-child{border-bottom:1px solid rgba(20,18,16,.15);}
+  .checklist .box{width:28px;height:28px;border:2px solid var(--ink);}
+  .checklist .box.done{background:var(--accent);border-color:var(--accent);}
+
+  /* Split demo block */
+  .demo{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+  .demo > div{padding:32px;border:1.5px solid var(--ink);}
+  .demo .hd{font-family:'IBM Plex Mono',monospace;font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+  .demo h4{margin:0 0 18px;font-family:'Instrument Serif',serif;font-weight:400;font-size:40px;line-height:1.05;letter-spacing:-.005em;}
+  .demo .result{font-size:22px;line-height:1.45;color:var(--ink);}
+  .demo .result .x{color:var(--bad);font-family:'IBM Plex Mono',monospace;font-size:19px;margin-right:10px;}
+  .demo .result .m{color:var(--good);font-family:'IBM Plex Mono',monospace;font-size:19px;margin-right:10px;}
+  .demo .cow{background:var(--paper-2);}
+  .demo .code{background:var(--ink);color:var(--paper);}
+  .demo .code .hd{color:rgba(255,255,255,.6);}
+  .demo .code .result{color:var(--paper);}
+  .demo .code .result .m{color:#8CC196;}
+
+  /* "Both tools work" variant — green-light both boxes (slide 8) */
+  .demo.both-ok > .cow,
+  .demo.both-ok > .code{
+    background:var(--paper-2);
+    color:var(--ink);
+    border:2.5px solid var(--good);
+    position:relative;
+  }
+  .demo.both-ok > .cow .hd,
+  .demo.both-ok > .code .hd{color:var(--good);}
+  .demo.both-ok > .code .result{color:var(--ink);}
+  .demo.both-ok > .code .result .m,
+  .demo.both-ok > .cow .result .m{color:var(--good);}
+  .demo.both-ok > .cow::before,
+  .demo.both-ok > .code::before,
+  .demo.code-wins > .code::before{
+    content:"✓ Works";
+    position:absolute;top:-14px;left:24px;
+    background:var(--good);color:#F3EEE5;
+    font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500;
+    letter-spacing:.14em;text-transform:uppercase;
+    padding:4px 12px;
+  }
+  /* "code-wins" variant — green-light only the Claude Code box (slides 9-10) */
+  .demo.code-wins > .code{
+    position:relative;
+    border:2.5px solid var(--good);
+  }
+
+  /* Step-reveal for demo comparisons (slides 8–10) */
+  .demo[data-stepped] > .cow,
+  .demo[data-stepped] > .code{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 420ms cubic-bezier(.2,.7,.2,1), transform 420ms cubic-bezier(.2,.7,.2,1);
+  }
+  .demo[data-stepped] > .cow.reveal,
+  .demo[data-stepped] > .code.reveal{
+    opacity:1;
+    transform:none;
+  }
+
+  /* Agent arch */
+  .arch{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .arch-col{padding:24px 28px;border:1.5px solid var(--ink);}
+  .arch-col .hd{font-family:'IBM Plex Mono',monospace;font-size:17px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+  .arch-col h4{margin:0 0 20px;font-family:'Instrument Serif',serif;font-weight:400;font-size:38px;}
+  .arch-col.bad{border-color:var(--bad);}
+  .arch-col.bad .hd{color:var(--bad);}
+  .arch-col.good{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .arch-col.good .hd{color:var(--accent-soft);}
+
+  /* Pipeline node */
+  .pipe{display:flex;flex-direction:column;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:18px;line-height:1.55;}
+  .pipe .ln{padding:10px 14px;background:rgba(20,18,16,.05);border-left:2px solid var(--muted);}
+  .pipe .ln.h{border-left-color:var(--accent);background:rgba(184,80,42,.08);color:var(--ink);}
+  .pipe .ln.gate{border-left-color:var(--good);background:rgba(62,106,72,.08);}
+  .arch-col.good .pipe .ln{background:rgba(255,255,255,.06);border-left-color:rgba(255,255,255,.3);color:var(--paper);}
+  .arch-col.good .pipe .ln.h{border-left-color:var(--accent-soft);background:rgba(232,180,154,.12);}
+  .arch-col.good .pipe .ln.gate{border-left-color:#8CC196;background:rgba(140,193,150,.1);}
+
+  /* Slide 7 (Automation · Augmentation · Agency) — dense 3-col card, scoped compaction */
+  .triad-cards .body{gap:6px;}
+  .triad-cards .t-title{font-size:66px;}
+  .triad-cards .t-subtitle{font-size:30px;}
+  .triad-cards .t-body{font-size:26px;line-height:1.26;}
+  .triad-cards .t-small{font-size:22px;line-height:1.26;}
+</style>
+</head>
+<body>
+
+<script type="application/json" id="speaker-notes">
+[
+  "[Tina · ~1 min]\n• Hands up: who used Cowork every day this week? Who has built a skill?\n• Title: 'Building agentic workflows on Claude' — Beyond Cowork.\n• The arc of today: go from a personal assistant to the system that runs your operations.\n• Quick intro by name, keep it to a minute. → next: who's teaching you.",
+  "[Tina · ~2 min]\n• Tina: 20+ yrs growth (Expedia · Tencent · Klook · Traveloka), now runs Novastacks — 12 agents, 1:9 human-to-agent ratio.\n• Land it: 'An operator who builds and runs these systems daily — not in decks.'",
+  "[Tina · ~3 min]\n• Open the floor before we present — we want a few real voices.\n• Q1: How do you feel after using Cowork? Q2: What impact could agentic workflows have on YOUR job?\n• Take ~2 min, 3-4 answers. Listen for pain points you can call back to later in the day.",
+  "[Tina · ~2 min]\n• The shift isn't coming — it's here, and the adopter gap widens every quarter.\n• Three beats: adoption (87% use gen AI; 57% have agents in production) · time saved (6.1 hrs/wk, seniors 8-10) · output (44% productivity, 80% shorter content timelines).\n• Don't read every number — pick adoption + one time stat. Sources are on the slide.",
+  "[Tina · ~3 min]\n• The job itself is changing: a marketing engineer builds the systems, not just runs campaigns.\n• Old job = execution. New job = orchestration: design the system, then supervise it.\n• Stat: 3,000+ GTM / Marketing Engineer roles open, +205% YoY.\n• Land it (Emily Kramer): 'With tools, you are the operator. With agents, you are the manager.'",
+  "[Tina · ~1 min]\n• Set expectations for the 3 hours: the vocabulary you half-know, a mental model of how agents work, and skills + agents built with real examples.\n• Payoff line: by the end you'll say 'that should be a hook, not a rule' and your team will know what you mean.\n• Not an engineering class — you won't write code, you'll learn to design workflows.",
+  "[Tina · ~4 min]\n• THIS SLIDE = the three MODES of working — not 'agents vs workflows'.\n• Automation (n8n/Zapier): you wire it once, it runs the same every time. Deterministic.\n• Augmentation (Claude.ai/Cowork/Chrome): you work WITH AI, in the loop every turn.\n• Agency (Skills & Agents): you configure it to work independently — set the rules, it decides the steps.\n• Land it: 'Automation runs the predictable. Augmentation boosts you in the moment. Agency runs while you sleep.' Knowing which to reach for is the whole job.",
+  "[Tina · ~2 min]\n• Orient them on the infographic: ten surfaces, one shared brain.\n• Today we dig into the ones in orange — the rest are always one step away.\n• 'Same brain, different doors in.' Don't go surface-by-surface — just give the lay of the land.",
+  "[Tina · ~3 min]\n• For agentic workflow, focus on 3 interfaces: Claude.ai, Cowork, Claude Code. Same brain — different access to your system.\n• Claude.ai = smart colleague on chat · Cowork = delegated assistant in a sandbox (80% of daily work) · Code = full file/git/shell access, builds team systems.\n• Rule of thumb: tool has an open API → Claude Code (calls it via MCP). Tool blocks programmatic access (e.g. LinkedIn) → use the browser (Cowork / Claude in Chrome).\n• 'You already have Cowork. Today is about where it stops and what's next.'",
+  "[Tina · ~2-3 min]\n• How a coding assistant actually works — the inner loop (Anthropic diagram). It follows the same pattern a human developer would.\n• Three steps: 01 Gather context (read the error, find the files, look up docs) → 02 Formulate a plan → 03 Take action (edit files, run tests/commands) → loop back if it's not right.\n• Key insight: steps 1 & 3 require reaching OUTSIDE the chat — read files, run commands, hit APIs. That's tool use — and why Code & Cowork exist, not just chat.\n• Land it: 'The model thinks. The harness gives it hands.'",
+  "[Tina · ~2 min]\n• Sharpen the distinction: Artifact = a thing produced; Skill = a process for producing things.\n• Artifact lives in the conversation, per-session. Skill lives on disk, auto-loads forever.\n• They compose: a skill can produce an artifact — /build-dashboard is the skill, the React dashboard it drops in the panel is the output.",
+  "[Tina · ~2 min]\n• Claude in Chrome = a browsing agent operating YOUR logged-in browser — reads pages, clicks, fills forms.\n• Because it's your session, Instagram / LinkedIn / portal logins all work.\n• When: research behind logins, pulling structured data off pages, repetitive browser tasks. Note: we used it in Demo 1.",
+  "[Tina · ~2-3 min]\n• Tool use = what turns a chatbot into something that can DO things. On its own, an LLM is just text in → text out.\n• The model says 'call this tool' and your computer does it — read a file, hit an API, open a browser, feed the result back.\n• Augmented LLM = Retrieval (look things up) + Tools (take action) + Memory (remember across turns).\n• Two toolboxes: Cowork = pre-packaged (Anthropic wired it — sandbox files, browser, connectors), you pick from the menu. Claude Code = any tool with an API via MCP, you write the menu.\n• Live example: Playwright MCP drives a real Chrome — today every slide edit made Claude open this deck, screenshot it, read it back. Cowork can't add Playwright; Code can.\n• Land it: 'Same brain. Different toolboxes — Cowork's is closed and curated, Code's is open.'",
+  "[Tina · ~3 min]\n• Three words people confuse. Two are integrations, one is packaging.\n• Connectors = Anthropic's prebuilt (Gmail, Drive, Notion, Calendar). MCP = open protocol, ANY tool with an API, you/your team build it. Plugins = an installable bundle (skills + commands + agents + hooks + MCP).\n• Land it: 'Connectors + MCP = how Claude reaches tools. Plugins = how you package and share.' MCP is a USB port; a plugin is the boxed kit.\n• Footnote: team-shared plugins need an Anthropic Team subscription.",
+  "[Tina · ~2 min]\n• Make MCP concrete with a marketer flow: you type a prompt → Claude picks the tool → MCP calls GA4 → answer with real numbers.\n• It's the same Cowork box you already use; the MCP connection is invisible to you.\n• Land it: 'Without MCP, Claude answers only from what you paste. With MCP, it pulls live data on its own — and stops guessing.'",
+  "[Tina · ~1 min]\n• Quick orientation (screenshot): claude.ai → Settings → Connectors.\n• Anthropic-maintained. One click to install. Move on.",
+  "[Tina · ~1 min]\n• Where plugins live (screenshots): Desktop app → Customize → Personal plugins → + → Plugin Directory.\n• A plugin bundles skills/commands/agents. Install, organize, share.",
+  "[Tina · ~2 min]\n• Skills = folders of instructions Claude can discover and use. Every skill is a SKILL.md with a name + description in frontmatter.\n• The match: Claude compares your request to each skill's description; close enough → it activates automatically.\n• The point: teach Claude once, it applies that knowledge in every future matching session — no repeating yourself.",
+  "[Tina · ~2 min]\n• Anatomy: one required file (SKILL.md) + three optional folders — references/ (rules), scripts/ (code), assets/ (templates).\n• Each adds leverage ONLY when needed — on-demand loading keeps context cheap.\n• It's version-controlled and shareable: commit to Git, reuse across projects, teams, clients.",
+  "[Tina · ~2 min]\n• SKILL.md = the operation manual. Frontmatter: name + description (the trigger) + optional allowed-tools.\n• Body answers when/how/what: ## Trigger, ## Workflow, ## Output.\n• Only SKILL.md is required — add folders only when the skill actually needs them.",
+  "[Tina · ~2 min]\n• Skills load on demand — not on every message, not only when you type a slash.\n• Compare the cost: CLAUDE.md loads every turn (high) · slash command loads full body on call (medium) · skill = only the description is indexed, body loads when matched (low).\n• Example: 'Write the monthly affiliate report' → Claude matches the description → loads the skill → runs. You never typed a command.",
+  "[Tina · ~2 min]\n• Rule of thumb: if you explain the same thing to Claude repeatedly — that's a skill waiting to be written.\n• Signals: re-describing PR feedback format, commit format, brand voice, or your audit method every single time.\n• Land it: 'Second time you say it — make it a skill.'",
+  "[Tina · ~2-3 min]\n• Skills are easy to write — easy to write BADLY. Five rules separate the two: sharp description · one job · names its inputs · short body + linked references · testable output.\n• Hammer #1: the description IS the trigger. 'Affiliate tool' → Claude never finds it.\n• Land it: 'The description is the trigger, the body is the recipe, references are the pantry — load only when cooking.'",
+  "[Tina · ~2-3 min]\n• Agent = a specialist with its OWN whiteboard (fresh context). A markdown spec in .claude/agents/ with a role, tools, and instructions.\n• It spins up a subagent, does the work, returns only a summary — keeps YOUR context clean.\n• When: judgment work or heavy research that would burn your window ('why did traffic drop?', 'read these 20 files and brief me').",
+  "[Tina · ~2 min]\n• Same base model — different role/tools/instructions. You decide.\n• Contrast the two cards: /linkedin-writer (learns from rejections, writes in Tina's voice, passes a 10-criteria eval) vs /writer (client-agnostic, adapts to the nearest CLAUDE.md).\n• Land it: 'Same base model — the orchestrator (you) is what makes the difference. Your agents won't look like anyone else's.'",
+  "[Tina · ~2 min]\n• When to reach for which: Skill = a recipe card (one repeatable procedure, cheap) · Agent = a specialist chef (a role with judgment + its own whiteboard).\n• Land it (rule of thumb): 'If you could write the steps out in advance, it's a skill. If you need judgment, or you'd dump a lot of files into your window, it's an agent.'",
+  "[Tina · ~1 min]\n• Divider into the three live demos. Frame: 'Same prompt. Two tools. Where does each land?'\n• Preview the trio: 01 influencer research · 02 GSC period-over-period · 03 video ad pipeline.",
+  "[Tina · ~5 min — live]\n• The case where BOTH tools work. Same prompt: find premium ID travel influencers on IG → Google Sheet.\n• Cowork: Claude in Chrome (real IG in your logged-in browser) + Sheets connector. Code: Playwright MCP + Sheets MCP. Both → 15+ influencers, team-ready.\n• Land it: 'Same brain. Different harness. Different result. The difference is MCP.'",
+  "[Tina · ~5 min — live]\n• The brutal one: Cowork hits a dead end — no GSC connector, 'I don't have access to Google Search Console.'\n• Code via MCP: pulls thousands of queries, period-over-period (impressions · clicks · CTR · position), surfaces rising queries & declining pages → complete analysis in one run.\n• Land it: 'You're not limited to what Anthropic pre-builds. You connect what you need.'",
+  "[Tina · ~5 min — live]\n• Most ambitious: a TikTok ad from a Tiket activity page — local-looking avatar, real photos, VO throughout.\n• Cowork advises: drafts script/storyboard, but can't reliably scrape the page, no HeyGen/Seedance, can't chain it → you do the execution.\n• Code executes: Chrome MCP scrape → script → HeyGen/Seedance MCP → assembles the pipeline. You review & approve.\n• Land it: 'Advisor → operating system. That is the shift.'",
+  "[Tina · ~30 min activity]\n• Set up the breakout: teams of 4, 30 min on the clock. Build a real skill or agent for one task from your own desk.\n• Three steps: Pick (a weekly task ≥1 hr) → Build (name it, write the description, draft the body) → Sell (2 min: what it does, when to use it, who runs it).\n• We pick one team per group to demo after the break. Start the timer.",
+  "[— · 10 min break]\n• Break — back in 10. Flag that Section 2 (the harness) after the break is the important part. Restart hard, on time.",
+  "[Tina · ~10-15 min]\n• Post-break show & tell: one team at a time, ≤2 min (60s what it does · 30s when to use it · 30s who runs it).\n• We give live feedback on: description sharpness, scope, tool choice, the first line of the body. Room asks one question each — 'Would you reach for this on Monday?'\n• Land it: the best skills get their shape from real feedback, not the first draft.",
+  "[Tina · ~3 min]\n• This is how you give Claude persistent business context — it boots into your voice, rules, and playbooks every session, no re-briefing.\n• Walk the real tree: CLAUDE.md (constitution) · settings.json · hooks/ · agents/ · commands/ · skills/ — plus project-level agents.\n• The numbers: 60 commands, 70 skills, 15 project agents — one person, built over months.\n• Land it: 'The brain is the same for everyone. The harness is what makes it yours.'",
+  "[Tina · ~3 min]\n• Pivot into the harness. The one concept behind almost every frustration: the context window.\n• It IS: the total text Claude can reference while answering (including its own response) — working memory for THIS conversation.\n• It is NOT: long-term knowledge, unlimited, or persistent — it resets each session unless you save it.\n• 'A working memory, not a brain.' This mental model comes before skills and agents.",
+  "[Tina · ~2 min]\n• How you know it's rotting: forgets an instruction from 20 turns ago · output gets generic · agents inconsistent across runs · steps dropped mid-task · re-asks for info you gave · voice drifts.\n• The trap: your instinct is to repeat yourself. Land it: 'Don't. Reset or offload — then continue.'\n• 'Symptom ≠ bug. It's context physics.'",
+  "[Tina · ~2-3 min]\n• Everything flows into ONE brain sharing one 1M ceiling: left = CLAUDE.md, MEMORY.md, skill/MCP tool lists; right = conversation so far, files read, screenshots, tool results, the answer.\n• Hammer the danger: tool results run 5-50K+. 'One big MCP call + a long PDF + a 20-turn chat = 30-40% of your window, gone — and accuracy drops long before that.'\n• Takeaway: curate what enters the brain.",
+  "[Tina · ~2 min]\n• The bar chart shows relative token cost per source. CLAUDE.md is small; MCP tool lists are big; a single tool result is the biggest bar (5-50K+).\n• Land it: 'A single tool call can cost more than your whole CLAUDE.md. That's why MCP tool discipline matters.'",
+  "[Tina · ~3 min]\n• The whiteboard metaphor for six surfaces: CLAUDE.md = permanent marker (every turn — keep it short) · MEMORY.md = sticky note per project · PROGRESS.md = notebook on the desk (survives wipes) · Skills = filing cabinet · Agents = their own whiteboards · Hooks = stamps on the wall (zero context cost).\n• Land it: every design choice has an obvious answer — whiteboard, cabinet, desk, or wall?",
+  "[Tina · ~3 min]\n• The real problem: bigger isn't better. Accuracy degrades as the window fills (2% at turn 1 → 95% at turn 20) even when everything technically fits.\n• Quote the Claude docs line on context rot — curating what's in context matters as much as how much fits.\n• The fixes: trim CLAUDE.md · split procedures into skills · persist plans to PROGRESS.md · /compact when full · /clear when switching · delegate heavy research to subagents.\n• Land it: 'It's not about saving space. It's about output quality.'",
+  "[Tina · ~5 min]\n• The war story: our prospect-audit v2 shipped a hallucinated client report — inflated keyword count (27,659 vs real 15,164), swapped CWV metrics between domains.\n• Why: v2 = 1 agent, 1,791 lines, 8 phases in one window; by Phase 7 ~100K+ tokens, the Phase-0 rules were drowning.\n• v3 fix: decompose into orchestrator + collect/report subagents (fresh context) + 3 Python gates between them. Context at report: 100-150K → 10-15K. Hallucinations → zero post-gate.\n• Land it: 'The skill wasn't the problem. The architecture was. It can't hallucinate past a Python exit code.'",
+  "[Tina · ~3 min]\n• Name the three pieces from that story, in plain language:\n• Agent = one job per worker (fresh start; the collect agent never sees the report agent's mess).\n• Hook = a tripwire YOUR computer runs, not Claude — fires automatically, runs without you watching.\n• Gate = a real code check Claude can't argue with ('report says 27,659, raw file says 15,164 → fail → retry'). Numbers don't lie.\n• Land it: 'Hooks fire the gates — the rule runs without you. Together they're the harness — the system that runs your operations.'",
+  "[Tina · ~2-3 min]\n• Callback to the hook: it's not just cleanup — it's how the agent LEARNS. On stop, a hook writes one line to CLAUDE.md/MEMORY.md; the next session reads it back and walks in already knowing the lesson.\n• Why it isn't fine-tuning: no weights, no GPU, no data team — it just changes what the model knows before it starts. A shell script does it.\n• Payoff: the work compounds — run 10 is sharper than run 1. 'Never let a correction evaporate.'",
+  "[Tina · ~3 min]\n• Live example tying hook → gate together: how I avoid AI-slop content. Edit a markdown file in my content folders → the PostToolUse hook fires → runs linkedin-slop-check.py → injects the score + flagged phrases back into Claude's context.\n• Two parts: the rule set up once (settings.json matcher Edit|Write) + my personal slop list (banned: 'isn't X. It's Y', 'in today's fast-paced…', game-changer; restricted: leverage, delve, robust…).\n• Show the FAIL output. Land it: 'Set up the rule once. Build your list once. The check runs forever — without you.'",
+  "[Tina · ~3 min]\n• Team orchestration / the coordination layer. 'Git is the new Notion' — and it's smaller than Notion.\n• Translate the 5 commands: pull = refresh a Google Doc · status = what changed · commit = save version with a note · push = publish/share · log = version history (who changed what, when).\n• Why it matters: without it you get 100 versions of the 'affiliate report' — everyone doing same same but different.",
+  "[Tina · ~1 min]\n• Close: 'Thank you. Now go build something.'\n• One-line recap of the arc: same brain, bigger operating system — from a personal assistant to the system that runs your operations.\n• Point to resources / offer to stay for questions.",
+  "[Appendix — divider]\n• Not part of the main flow. Skip in a 3-hour workshop; open on request. Holds the rebuild case study, hook/gate pattern, full live build-along, and the safety envelope.",
+  "[Appendix · Tina]\n• (Optional) Interlude into the live build-along: 'You've seen the gap and the concepts — now watch the build.' Live in the terminal.",
+  "[Appendix · Tina — build-along]\n• Layer 1 — Fetch: a simple data pull, partner performance from the API. 'I'll start with a simple data pull.' (247 rows · last 90 days)",
+  "[Appendix · Tina — build-along]\n• Layer 2 — Enrich: add web research — recent news, market position. 'Two data sources combined.'",
+  "[Appendix · Tina — build-along]\n• Layer 3 — Analyze: Claude finds trends and flags risk (bookings, sentiment, tenure). 'It's thinking, not just copying.' (12 flagged · 4 high-risk)",
+  "[Appendix · Tina — build-along]\n• Layer 4 — Format: render + save a clean one-page brief you could actually send. 'That's a deliverable.'",
+  "[Appendix · Tina — build-along]\n• Layer 5 — Wrap (the magic step): fold all four layers into /partner-report. One entrypoint — anyone on the team runs it.",
+  "[Appendix · Tina]\n• Every workflow has the same shape: Fetch → Enrich → Analyze → Format → Wrap. Only the data sources and the output format change.\n• Bridge to each team: Sales /call-prep · Content /content-plan · Marketing /weekly-brief.",
+  "[Appendix · Tina]\n• How you trust an agent not to break things: three concentric layers. Permissions = what it CAN'T do (hard block) · Hooks = what the system enforces (tripwire) · Instructions = what it SHOULD do (CLAUDE.md + skills).\n• All version-controlled, all auditable."
+]
+</script>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION 0 — WHY WE'RE HERE
+       ══════════════════════════════════════════════════════ -->
+
+  <!-- 1 · TITLE -->
+  
+  
+  
+  
+  <section data-screen-label="01 Title" class="slide dark">
+    <div class="chrome">
+      <div class="left"><span><span class="dot"></span>Novastacks AI</span></div>
+      <div></div>
+    </div>
+    <div class="body" style="justify-content:center;">
+      <div class="t-eyebrow" style="margin-bottom:36px;">AI Panel</div>
+      <div class="hero-title" style="color:var(--paper);max-width:1700px;font-size:180px;line-height:.95;">
+        Agentic AI<br/><em style="color:var(--accent-soft);">Workflows.</em>
+      </div>
+      <div class="hero-sub" style="margin-top:48px;max-width:1300px;color:rgba(255,255,255,.75);">
+        with Novastacks AI &mdash; going from a personal assistant<br/>to the system that runs your operations.
+      </div>
+      <div class="t-body" style="margin-top:64px;color:rgba(255,255,255,.55);">Tina Chu</div>
+    </div>
+    <div class="foot"><div>University of Pennsylvania · Agentic AI Workflows · 2026</div><div>1 / 26</div></div>
+  </section>
+
+  <section data-screen-label="01b Trainers" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>OPENING</span><span>2 / 26</span></div><div>Who's in the room</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">Your trainer.</div>
+
+      <div class="flex-row gap-md" style="margin-top:36px;align-items:stretch;">
+        <!-- Tina -->
+        <div class="grow" style="padding:36px 40px;background:var(--paper-2);border-left:4px solid var(--accent);display:flex;gap:32px;align-items:flex-start;">
+          <img src="screenshots/tina-headshot.jpg" alt="Tina Chu"
+               style="width:200px;height:200px;object-fit:cover;border-radius:50%;flex-shrink:0;border:2px solid var(--accent);"/>
+          <div style="flex:1;min-width:0;">
+            <div class="t-eyebrow" style="color:var(--accent);margin-bottom:10px;">Tina Chu</div>
+            <div class="t-title-sm" style="font-size:44px;line-height:1.05;margin-bottom:10px;">Marketing leader · AI orchestrator.</div>
+            <div class="t-body" style="line-height:1.4;font-size:24px;">
+              20+ years shaping growth at <strong>Expedia · Tencent · Klook</strong>. VP of Acquisition Marketing.
+            </div>
+            <div class="t-body" style="margin-top:12px;line-height:1.4;color:var(--ink-2);font-size:22px;">
+              Now operates <strong>Novastacks AI</strong> — a growth marketing studio providing AEO and growth-partner services.
+            </div>
+            <div class="t-mono" style="margin-top:14px;color:var(--muted);font-size:15px;letter-spacing:.06em;">novastacks-ai.com · linkedin.com/in/huilanchu</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><div>Novastacks AI</div><div>2 / 26</div></div>
+  </section>
+
+  <section data-screen-label="01d The shift is here" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>OPENING</span><span>3 / 26</span></div><div>The shift is already happening</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">The shift of <em>agentic workflow</em> is happening.</div>
+
+      <div class="flex-row gap-md" style="margin-top:44px;align-items:stretch;">
+        <!-- Beat 1: adoption -->
+        <div class="grow" style="padding:28px 32px;background:var(--paper-2);border-top:3px solid var(--accent);">
+          <div class="t-eyebrow" style="color:var(--accent);margin-bottom:18px;">01 · More people are using it</div>
+          <div style="display:flex;align-items:baseline;gap:18px;">
+            <div style="font-family:'Instrument Serif',serif;font-size:88px;line-height:.95;letter-spacing:-.02em;">87<span style="font-size:42px;">%</span></div>
+          </div>
+          <div class="t-body" style="margin-top:6px;line-height:1.35;">of marketers use gen AI in a recurring workflow — up from <strong>51% two years ago</strong>.</div>
+          <div style="margin:18px 0 6px;height:1px;background:rgba(20,18,16,.12);"></div>
+          <div style="display:flex;align-items:baseline;gap:18px;">
+            <div style="font-family:'Instrument Serif',serif;font-size:88px;line-height:.95;letter-spacing:-.02em;">57<span style="font-size:42px;">%</span></div>
+          </div>
+          <div class="t-body" style="margin-top:6px;line-height:1.35;">of enterprises already have <strong>agents in production</strong>.</div>
+        </div>
+
+        <!-- Beat 2: time saved -->
+        <div class="grow" style="padding:28px 32px;background:var(--paper-2);border-top:3px solid var(--sage);">
+          <div class="t-eyebrow" style="color:var(--sage);margin-bottom:18px;">02 · And they save serious time</div>
+          <div style="display:flex;align-items:baseline;gap:18px;">
+            <div style="font-family:'Instrument Serif',serif;font-size:88px;line-height:.95;letter-spacing:-.02em;">6.1<span style="font-size:34px;"> hrs</span></div>
+          </div>
+          <div class="t-body" style="margin-top:6px;line-height:1.35;">recovered per marketer, per week. Senior practitioners <strong>save 8–10 hrs</strong>.</div>
+          <div style="margin:18px 0 6px;height:1px;background:rgba(20,18,16,.12);"></div>
+          <div style="display:flex;align-items:baseline;gap:18px;">
+            <div style="font-family:'Instrument Serif',serif;font-size:88px;line-height:.95;letter-spacing:-.02em;">50–60<span style="font-size:42px;">%</span></div>
+          </div>
+          <div class="t-body" style="margin-top:6px;line-height:1.35;">cut on <strong>PRDs, meeting notes, research synthesis</strong> (PMs).</div>
+        </div>
+
+        <!-- Beat 3: ROI -->
+        <div class="grow" style="padding:28px 32px;background:var(--paper-2);border-top:3px solid var(--good);">
+          <div class="t-eyebrow" style="color:var(--good);margin-bottom:18px;">03 · Compounding into output</div>
+          <div style="display:flex;align-items:baseline;gap:18px;">
+            <div style="font-family:'Instrument Serif',serif;font-size:88px;line-height:.95;letter-spacing:-.02em;">44<span style="font-size:42px;">%</span></div>
+          </div>
+          <div class="t-body" style="margin-top:6px;line-height:1.35;">productivity gain for teams using AI strategically · <strong>20–30% ROI lift</strong>.</div>
+          <div style="margin:18px 0 6px;height:1px;background:rgba(20,18,16,.12);"></div>
+          <div style="display:flex;align-items:baseline;gap:18px;">
+            <div style="font-family:'Instrument Serif',serif;font-size:88px;line-height:.95;letter-spacing:-.02em;">80<span style="font-size:42px;">%</span></div>
+          </div>
+          <div class="t-body" style="margin-top:6px;line-height:1.35;">shorter <strong>content production timelines</strong>.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;">
+        Sources · HubSpot AI Trends 2026 · McKinsey Global Survey · G2 Enterprise AI Agents Report · Averi State of AI Content Marketing 2026
+      </div>
+    </div>
+    <div class="foot"><div>Data: Q1–Q2 2026</div><div>3 / 26</div></div>
+  </section>
+
+  <section data-screen-label="02 Role has changed" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 0 · Why we're here</span><span>4 / 26</span></div><div>Marketing functions are changing too</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">The marketing functions start changing too.</div>
+
+      <div style="margin-top:18px;display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;">
+        <span style="font-family:'Instrument Serif',serif;font-size:64px;line-height:1;color:var(--accent);letter-spacing:-.02em;">+205%</span>
+        <span class="t-body" style="font-size:22px;line-height:1.3;color:var(--ink-2);max-width:1150px;">YoY growth in Marketing Engineer &amp; GTM roles open on LinkedIn — 3,000+ live listings.</span>
+      </div>
+
+      <div class="flex-row gap-md" style="margin-top:28px;align-items:stretch;">
+        <!-- LHS · Traditional marketer -->
+        <div class="grow" style="padding:36px 40px;background:var(--paper-2);border-left:4px solid var(--muted);">
+          <div style="display:inline-block;padding:4px 14px;background:var(--muted);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;">Execution</div>
+          <div class="t-title-sm" style="font-size:38px;line-height:1.1;margin-bottom:18px;color:var(--muted);">Traditional marketer.</div>
+          <div class="t-body" style="line-height:1.5;font-size:24px;color:var(--ink-2);">
+            A traditional marketer manually strategises, executes, and reports on campaigns — running each step by hand with off-the-shelf tools.
+          </div>
+        </div>
+
+        <!-- VS -->
+        <div style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;padding:0 6px;">
+          <div style="font-family:'Instrument Serif',serif;font-size:96px;font-style:italic;color:var(--accent);line-height:1;letter-spacing:-.02em;">vs</div>
+        </div>
+
+        <!-- RHS · Marketing engineer -->
+        <div class="grow" style="padding:36px 40px;background:var(--paper-2);border-left:4px solid var(--accent);">
+          <div style="display:inline-block;padding:4px 14px;background:var(--accent);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;">Orchestration</div>
+          <div class="t-title-sm" style="font-size:38px;line-height:1.1;margin-bottom:18px;color:var(--accent);">Marketing engineer.</div>
+          <div class="t-body" style="line-height:1.5;font-size:24px;">
+            A marketing engineer builds the systems, agents, and automations that make every GTM function faster — combining coding, APIs, and system architecture with marketing judgment.
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:34px;padding:20px 30px;border-left:3px solid var(--accent);background:var(--paper-2);max-width:1700px;">
+        <div class="t-body" style="font-family:'Instrument Serif',serif;font-style:italic;font-size:32px;line-height:1.3;">
+          "With tools, you are the operator. With agents, you are the manager." &nbsp;<span style="font-family:'IBM Plex Mono',monospace;font-style:normal;font-size:18px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-left:8px;">Emily Kramer · ex-VP Marketing, Asana</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><div></div><div>4 / 26</div></div>
+  </section>
+
+  <section data-screen-label="04 Automation Augmentation Agency" class="slide triad-cards">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 1 · The building blocks</span><span>5 / 26</span></div><div>Automation · Augmentation · Agency</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">Automation. Augmentation. <em>Agency.</em></div>
+      <div class="t-subtitle" style="margin-top:8px;color:var(--muted);max-width:1800px;">Three modes — one AI. Knowing which to reach for is the whole job.</div>
+
+      <div class="flex-row gap-md" style="margin-top:16px;align-items:stretch;">
+        <!-- AUTOMATION -->
+        <div class="grow" style="padding:16px 24px;background:var(--paper-2);border-top:4px solid var(--muted);">
+          <div class="t-eyebrow" style="color:var(--muted);margin-bottom:8px;">01</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:40px;line-height:1.04;letter-spacing:-.01em;margin-bottom:4px;">Automation.</div>
+          <div class="t-body" style="line-height:1.35;color:var(--ink-2);">Human wires a flow. Machine runs it the same way, every time.</div>
+
+          <div class="t-eyebrow" style="margin-top:22px;margin-bottom:8px;">Tool</div>
+          <div class="t-body"><span class="t-mono-sm">n8n</span> · <span class="t-mono-sm">Zapier</span> · RPA</div>
+
+          <div class="t-eyebrow" style="margin-top:18px;margin-bottom:8px;">How it works</div>
+          <div class="t-body">Same steps, every run. <strong>100% consistent</strong> per step. Deterministic.</div>
+
+          <div class="t-eyebrow" style="margin-top:18px;margin-bottom:8px;">Best for</div>
+          <div class="t-body">High-volume, predictable, auditable work.</div>
+
+          <div class="t-eyebrow" style="margin-top:18px;margin-bottom:8px;">Sales example</div>
+          <div class="t-small" style="color:var(--muted);line-height:1.35;">Meeting booked → HubSpot deal → nurture sequence → Slack ping to the AE.</div>
+        </div>
+
+        <!-- AUGMENTATION -->
+        <div class="grow" style="padding:16px 24px;background:var(--paper-2);border-top:4px solid var(--sage);">
+          <div class="t-eyebrow" style="color:var(--sage);margin-bottom:8px;">02</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:40px;line-height:1.04;letter-spacing:-.01em;margin-bottom:4px;color:var(--sage);">Augmentation.</div>
+          <div class="t-body" style="line-height:1.35;color:var(--ink-2);">Human does the work <em>with</em> AI. You prompt, it helps, you review.</div>
+
+          <div class="t-eyebrow" style="margin-top:22px;margin-bottom:8px;color:var(--sage);">Tool</div>
+          <div class="t-body">Claude.ai · Cowork · Claude in Chrome</div>
+
+          <div class="t-eyebrow" style="margin-top:18px;margin-bottom:8px;color:var(--sage);">How it works</div>
+          <div class="t-body">You ask, it assists. You stay in the loop every turn.</div>
+
+          <div class="t-eyebrow" style="margin-top:18px;margin-bottom:8px;color:var(--sage);">Best for</div>
+          <div class="t-body">Drafting, thinking, research — your brain's co-pilot.</div>
+
+          <div class="t-eyebrow" style="margin-top:18px;margin-bottom:8px;color:var(--sage);">Sales example</div>
+          <div class="t-small" style="color:var(--muted);line-height:1.35;">"Help me redraft this email for a skeptical CFO — tighter, more ROI-forward."</div>
+        </div>
+
+        <!-- AGENCY -->
+        <div class="grow" style="padding:16px 24px;background:var(--paper-2);border-top:4px solid var(--accent);">
+          <div class="t-eyebrow" style="color:var(--accent);margin-bottom:8px;">03</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:40px;line-height:1.04;letter-spacing:-.01em;margin-bottom:4px;color:var(--accent);font-style:italic;">Agency.</div>
+          <div class="t-body" style="line-height:1.35;color:var(--ink-2);"><strong>Human configures the AI to work independently.</strong> Set the rules; it decides the steps.</div>
+
+          <div class="t-eyebrow" style="margin-top:22px;margin-bottom:8px;color:var(--accent);">Tool</div>
+          <div class="t-body"><strong>Skills &amp; Agents</strong> (Claude Code)</div>
+
+          <div class="t-eyebrow" style="margin-top:18px;margin-bottom:8px;color:var(--accent);">How it works</div>
+          <div class="t-body">Looks, thinks, decides, adjusts — within boundaries you set.</div>
+
+          <div class="t-eyebrow" style="margin-top:18px;margin-bottom:8px;color:var(--accent);">Best for</div>
+          <div class="t-body">Judgment-heavy, messy, novel-input work at scale.</div>
+
+          <div class="t-eyebrow" style="margin-top:18px;margin-bottom:8px;color:var(--accent);">Sales example</div>
+          <div class="t-small" style="color:var(--muted);line-height:1.35;">"Before every call, read the prospect's last 6 months of emails + 3 calls and draft a brief with likely objections."</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="foot"><div></div><div>5 / 26</div></div>
+  </section>
+
+  <section data-screen-label="05 Three harnesses" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 1 · The building blocks</span><span>6 / 26</span></div><div>Agentic workflow · 3 interfaces</div></div>
+    <div class="body">
+      <div class="t-title">Claude has 3 interfaces to interact with its LLM.</div>
+
+      <table class="k compact" style="margin-top:32px;">
+        <thead>
+          <tr>
+            <th style="width:14%"></th>
+            <th>Claude.ai</th>
+            <th>Cowork</th>
+            <th style="color:var(--accent);">Claude Code</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="label">Metaphor</td><td class="old">Smart colleague on chat</td><td class="old">Delegated assistant in a sandbox</td><td class="new">Agentic system you build with</td></tr>
+          <tr><td class="label">Where it works</td><td class="old">On Anthropic's servers</td><td class="old">On your computer, in a sandbox</td><td class="new">On your computer · full access</td></tr>
+          <tr><td class="label">Interface</td><td class="old">Browser / desktop app</td><td class="old">Inside the desktop app</td><td class="new">Terminal / IDE / Desktop app</td></tr>
+          <tr><td class="label">Access to your system</td><td class="old">Via uploads / copy-paste only</td><td class="old">Limited sandbox — clicks, typing, screenshots</td><td class="new">Full file edits · <span class="t-mono-sm">git</span>, shell, VMs</td></tr>
+          <tr><td class="label">Strengths</td><td class="old">Think, write, analyze, use skills &amp; MCP</td><td class="old">Long-running tasks, browses, files, scheduled</td><td class="new">Code, tools, hooks, agents, team skills</td></tr>
+          <tr><td class="label">Best for</td><td class="old">Quick turns, one-off thinking</td><td class="old">Daily knowledge work · 80%</td><td class="new">Reusable systems teams share</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="foot"><div></div><div>6 / 26</div></div>
+  </section>
+
+  <section data-screen-label="05d Tool use" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 1 · The building blocks</span><span>7 / 26</span></div><div>Tool Use — how Claude does things, not just talks</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">Tool Use. <span style="color:var(--muted);">What turns a chatbot into something that can <em>do</em> things.</span></div>
+      <div class="t-subtitle" style="color:var(--muted);max-width:1800px;line-height:1.4;">
+        On its own, an LLM is text in → text out. <strong>Tool use</strong> = the model says <em>"call this tool"</em> and your computer does it.
+      </div>
+
+      <div class="flex-row gap-md" style="margin-top:24px;align-items:stretch;">
+        <!-- LEFT: augmented LLM diagram + concrete examples -->
+        <div style="flex:1.1 1 0;padding:18px 22px;background:var(--paper-2);border-left:3px solid var(--muted);display:flex;flex-direction:column;align-items:center;">
+          <div class="t-eyebrow" style="margin-bottom:10px;align-self:flex-start;">From Anthropic — the augmented LLM</div>
+          <img src="screenshots/anthropic-eab/01-augmented-llm.png"
+               alt="The augmented LLM — LLM with Retrieval, Tools, and Memory"
+               class="zoomable"
+               style="max-height:260px;width:auto;max-width:100%;background:#fff;cursor:zoom-in;"/>
+          <div style="margin-top:18px;align-self:stretch;display:flex;flex-direction:column;gap:8px;">
+            <div class="t-body" style="line-height:1.4;font-size:19px;">
+              <strong style="color:var(--accent);">Retrieval</strong> — look things up. <em style="color:var(--muted);">"Pull last week's GA4 traffic."</em>
+            </div>
+            <div class="t-body" style="line-height:1.4;font-size:19px;">
+              <strong style="color:var(--sage);">Tools</strong> — take action. <em style="color:var(--muted);">"Edit the README, run <span class="t-mono-sm">git commit</span>."</em>
+            </div>
+            <div class="t-body" style="line-height:1.4;font-size:19px;">
+              <strong style="color:var(--good);">Memory</strong> — remember across turns. <em style="color:var(--muted);">"My voice. The banned-words list. The skill I just wrote."</em>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Playwright live example only -->
+        <div style="flex:1 1 0;display:flex;flex-direction:column;justify-content:center;">
+          <div style="padding:24px 28px;background:var(--ink);color:var(--paper);border-left:3px solid var(--accent);">
+            <div class="t-eyebrow" style="color:var(--accent);margin-bottom:10px;">Live example · Playwright MCP</div>
+            <div class="t-body" style="line-height:1.5;color:var(--paper);font-size:22px;">
+              An MCP that lets Claude drive a real Chrome window — navigate, click, screenshot, run JS.
+            </div>
+            <div class="t-body" style="margin-top:14px;line-height:1.5;color:rgba(248,242,234,.82);font-size:20px;">
+              <em>Used it building this deck: every slide edit triggered Claude to open the file, screenshot it, and read it back.</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><div>If the tool has an API, Code can use it. If it doesn't, you reach for the browser.</div><div>7 / 26</div></div>
+  </section>
+
+  <section data-screen-label="07a4 When to use" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 1 · The building blocks</span><span>8 / 26</span></div><div>When to use a skill</div></div>
+    <div class="body gap-sm" style="justify-content:center;">
+      <div class="t-eyebrow">Rule of thumb</div>
+      <div class="t-title" style="max-width:1800px;margin-top:16px;">
+        If you find yourself explaining the same thing to Claude <em>repeatedly</em> — that's a skill waiting to be written.
+      </div>
+
+      <div class="flex-row gap-md" style="margin-top:48px;align-items:stretch;">
+        <div class="grow" style="padding:22px 28px;background:var(--paper-2);border-left:4px solid var(--accent);">
+          <div class="t-eyebrow" style="color:var(--accent);margin-bottom:10px;">Signals</div>
+          <div class="flex-col gap-xs" style="font-size:22px;line-height:1.45;">
+            <div>→ Every PR review, you re-describe how to structure feedback.</div>
+            <div>→ Every commit, you remind Claude of the message format.</div>
+            <div>→ Every brand content piece, you re-paste your voice rules.</div>
+            <div>→ Every new client, you re-explain your audit methodology.</div>
+          </div>
+        </div>
+
+        <div class="grow" style="padding:22px 28px;background:var(--paper-2);border-left:4px solid var(--good);">
+          <div class="t-eyebrow" style="color:var(--good);margin-bottom:10px;">Fix</div>
+          <div class="t-body-lg" style="line-height:1.35;">
+            Write it <strong>once</strong> as a skill.
+          </div>
+          <div class="t-body" style="margin-top:10px;line-height:1.4;color:var(--ink-2);">
+            Description captures the trigger. Body captures your standard. <em>Every future session that matches gets it for free.</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-body" style="margin-top:26px;max-width:1750px;font-family:'Instrument Serif',serif;font-style:italic;font-size:26px;">
+        Second time you say it — make it a skill.
+      </div>
+    </div>
+    <div class="foot"><div>Source: Anthropic Academy · Introduction to Agent Skills</div><div>8 / 26</div></div>
+  </section>
+
+  <section data-screen-label="07a What is a skill" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 1 · The building blocks</span><span>9 / 26</span></div><div>What is a skill</div></div>
+    <div class="body gap-sm">
+      <div class="t-eyebrow">Anthropic · Agent Skills</div>
+      <div class="t-title" style="max-width:1800px;margin-top:10px;">
+        Skills are <em>folders of instructions</em> that Claude can discover and use to handle tasks more accurately.
+      </div>
+
+      <div class="flex-row gap-md" style="margin-top:26px;align-items:stretch;">
+        <div class="grow" style="padding:22px 26px;background:var(--paper-2);border-left:4px solid var(--accent);">
+          <div class="t-eyebrow" style="color:var(--accent);margin-bottom:10px;">The file</div>
+          <div class="t-body" style="line-height:1.4;">
+            Every skill lives in a <span class="t-mono">SKILL.md</span> file with a <strong>name</strong> and a <strong>description</strong> in its frontmatter.
+          </div>
+        </div>
+        <div class="grow" style="padding:22px 26px;background:var(--paper-2);border-left:4px solid var(--sage);">
+          <div class="t-eyebrow" style="color:var(--sage);margin-bottom:10px;">The match</div>
+          <div class="t-body" style="line-height:1.4;">
+            Claude compares your request against every skill's description. When the match is close enough, it <strong>activates the skill</strong> — automatically.
+          </div>
+        </div>
+        <div class="grow" style="padding:22px 26px;background:var(--paper-2);border-left:4px solid var(--good);">
+          <div class="t-eyebrow" style="color:var(--good);margin-bottom:10px;">The point</div>
+          <div class="t-body" style="line-height:1.4;">
+            Teach Claude once. It applies that knowledge <em>every future session</em> that matches — no more repeating yourself.
+          </div>
+        </div>
+      </div>
+
+      <div class="t-eyebrow" style="margin-top:24px;color:var(--muted);">A real one from my own setup</div>
+      <div style="margin-top:8px;padding:20px 28px;background:var(--ink);color:var(--paper);border-radius:2px;font-family:'IBM Plex Mono',monospace;font-size:17px;line-height:1.6;max-width:1850px;">
+        <span style="color:var(--accent-soft);">~/.claude/skills/action-tracker.md</span><br/>
+        <span style="color:rgba(255,255,255,.55);">---<br/>name: action-tracker<br/>description: Manage Novastacks action items in Airtable — add, update, complete, view tasks. Triggers on "mark X as done", "add this to my list", "what's on my plate", "what's overdue", or /action-tracker.<br/>---</span><br/>
+        <span style="color:rgba(255,255,255,.9);">› I say <em>"mark the Tiket deck as done"</em> → Claude matches the description → runs action-tracker → updates Airtable. I never opened the file.</span>
+      </div>
+    </div>
+    <div class="foot"><div>Source: anthropic.skilljar.com/introduction-to-agent-skills</div><div>9 / 26</div></div>
+  </section>
+
+  <section data-screen-label="07a3 How to invoke" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 1 · The building blocks</span><span>10 / 26</span></div><div>How to invoke a skill</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">Three ways a skill <em>activates.</em></div>
+      <div class="t-subtitle" style="color:var(--muted);max-width:1800px;">From explicit slash command to auto-invoke when Claude sees the right context.</div>
+
+      <div class="flex-row gap-md" style="margin-top:28px;align-items:stretch;">
+        <!-- 01 · SLASH COMMAND -->
+        <div class="grow" style="padding:22px 26px;background:var(--paper-2);border-left:4px solid var(--accent);display:flex;flex-direction:column;">
+          <div class="t-eyebrow" style="color:var(--accent);margin-bottom:10px;">01 · Slash command</div>
+          <div class="t-title-sm" style="font-size:28px;line-height:1.1;margin-bottom:10px;">You name the skill directly.</div>
+          <div class="t-body" style="line-height:1.4;font-size:18px;color:var(--ink-2);margin-bottom:12px;">
+            Fastest. Explicit. No ambiguity — you tell Claude exactly which skill to run. Works in Claude Code on your own machine.
+          </div>
+          <div style="margin-top:auto;padding:14px 16px;background:var(--ink);color:var(--paper);border-radius:2px;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6;">
+            <span style="color:rgba(255,255,255,.5);">tinachu@novastacks ~ %</span> claude<br/>
+            <span style="color:var(--accent-soft);">&gt; /prospect-audit acme-corp.com</span><br/>
+            <span style="color:rgba(255,255,255,.55);">[skill: prospect-audit · loaded]</span><br/>
+            <span style="color:rgba(255,255,255,.55);">[references/aeo-scoring.md loaded]</span><br/>
+            <span style="color:rgba(255,255,255,.55);">[running 12-phase audit...]</span>
+          </div>
+          <div class="t-small" style="margin-top:10px;color:var(--muted);font-style:italic;line-height:1.35;">
+            Best when you know the skill name and want it right now.
+          </div>
+        </div>
+
+        <!-- 02 · TELL CLAUDE -->
+        <div class="grow" style="padding:22px 26px;background:var(--paper-2);border-left:4px solid var(--sage);display:flex;flex-direction:column;">
+          <div class="t-eyebrow" style="color:var(--sage);margin-bottom:10px;">02 · Tell Claude</div>
+          <div class="t-title-sm" style="font-size:28px;line-height:1.1;margin-bottom:10px;">Mention the skill in plain English.</div>
+          <div class="t-body" style="line-height:1.4;font-size:18px;color:var(--ink-2);margin-bottom:12px;">
+            You say it. Claude looks up the skill by name, loads the body, runs it. No command syntax.
+          </div>
+          <div style="margin-top:auto;padding:16px 20px;background:var(--paper);border:1px solid var(--ink);font-family:'Instrument Serif',serif;font-size:20px;line-height:1.4;font-style:italic;color:var(--ink);">
+            "Run the prospect-audit skill on acme-corp.com."
+          </div>
+          <div class="t-small" style="margin-top:10px;color:var(--muted);font-style:italic;line-height:1.35;">
+            Best when you remember the name but not the exact trigger phrase.
+          </div>
+        </div>
+
+        <!-- 03 · AUTO-INVOKE -->
+        <div class="grow" style="padding:22px 26px;background:var(--paper-2);border-left:4px solid var(--good);display:flex;flex-direction:column;">
+          <div class="t-eyebrow" style="color:var(--good);margin-bottom:10px;">03 · Auto-invoke</div>
+          <div class="t-title-sm" style="font-size:28px;line-height:1.1;margin-bottom:10px;">Claude picks the skill itself.</div>
+          <div class="t-body" style="line-height:1.4;font-size:18px;color:var(--ink-2);margin-bottom:12px;">
+            You describe the work. Claude scans every skill's description, finds the match, loads it. <strong>You never named a skill.</strong>
+          </div>
+          <div style="margin-top:auto;padding:16px 20px;background:var(--paper);border:1px solid var(--ink);font-family:'Instrument Serif',serif;font-size:20px;line-height:1.4;font-style:italic;color:var(--ink);">
+            "Qualify acme-corp for us — usual checks."
+          </div>
+          <div class="t-small" style="margin-top:10px;color:var(--muted);font-style:italic;line-height:1.35;">
+            Best when the team uses different phrasing every time.
+          </div>
+        </div>
+      </div>
+
+      <!-- Reliability callout for #3 -->
+      <div style="margin-top:20px;padding:18px 26px;background:var(--paper-2);border-left:3px solid var(--good);max-width:1900px;">
+        <div class="t-eyebrow" style="color:var(--good);margin-bottom:8px;">How to make #3 reliable — write the description like a scenario</div>
+        <div class="t-body" style="line-height:1.5;font-size:19px;">
+          <strong>Bad:</strong> <span class="t-mono-sm" style="color:var(--muted);">"Prospect audit tool."</span> &nbsp;→&nbsp; Claude can't tell when to use it.<br/>
+          <strong>Good:</strong> <span class="t-mono-sm">"Use when qualifying a new prospect — runs a 12-phase AEO and SEO audit, drafts a one-page brief. Trigger phrases: 'qualify X,' 'audit X,' 'should we take X on.'"</span><br/>
+          <span style="color:var(--muted);font-style:italic;">Include the phrases your team actually uses. The description IS the matching surface.</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><div>The description is the trigger. Write it so Claude can find it.</div><div>10 / 26</div></div>
+  </section>
+
+  <section data-screen-label="07 What is an agent" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 1 · The building blocks</span><span>11 / 26</span></div><div>Agent</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">Agent. <span style="color:var(--muted);">A specialist with its own whiteboard.</span></div>
+
+      <div class="flex-row gap-md" style="margin-top:30px;align-items:stretch;">
+        <div class="grow" style="padding:26px 30px;background:var(--paper-2);border-left:4px solid var(--accent);">
+          <div class="t-eyebrow" style="color:var(--accent);margin-bottom:12px;">What it is</div>
+          <div class="t-body" style="line-height:1.4;">
+            A markdown spec in <span class="t-mono">.claude/agents/</span> with a <strong>role</strong>, <strong>tools</strong>, and <strong>instructions</strong>.
+          </div>
+          <div class="t-small" style="margin-top:10px;color:var(--muted);line-height:1.4;">
+            Spins up a <strong>subagent</strong> — its own fresh context window. Does the work, returns only a summary to you.
+          </div>
+        </div>
+
+        <div class="grow" style="padding:26px 30px;background:var(--paper-2);border-left:4px solid var(--sage);">
+          <div class="t-eyebrow" style="color:var(--sage);margin-bottom:12px;">How to activate</div>
+          <div class="t-body" style="line-height:1.4;">
+            <strong>Ask by role:</strong> <em>"Have the content-writer draft this blog."</em>
+          </div>
+          <div class="t-body" style="margin-top:10px;line-height:1.4;">
+            <strong>Or Claude picks one</strong> when the task matches. The subagent runs on its own whiteboard.
+          </div>
+        </div>
+
+        <div class="grow" style="padding:26px 30px;background:var(--paper-2);border-left:4px solid var(--good);">
+          <div class="t-eyebrow" style="color:var(--good);margin-bottom:12px;">When to use it</div>
+          <div class="t-body" style="line-height:1.4;">
+            <strong>Judgment work, or heavy research</strong> that would burn your context.
+          </div>
+          <div class="t-small" style="margin-top:10px;color:var(--muted);line-height:1.4;">
+            "Investigate why traffic dropped." "Read these 20 files and return a brief." Tasks that need a specialist, not a recipe.
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;padding:18px 26px;background:var(--ink);color:var(--paper);border-radius:2px;font-family:'IBM Plex Mono',monospace;font-size:18px;line-height:1.5;">
+        <span style="color:var(--accent-soft);">.claude/agents/marketing-data-analyst.md</span><br/>
+        <span style="color:rgba(255,255,255,.55);">---<br/>name: marketing-data-analyst<br/>description: Investigates traffic drops, diagnoses ranking shifts, writes data-driven briefs.<br/>tools: [ga4, gsc, ahrefs, sheets]<br/>---</span><br/>
+        <span style="color:rgba(255,255,255,.9);">You are a senior marketing analyst. Your job is to …</span>
+      </div>
+    </div>
+    <div class="foot"><div>Agent = specialist with its own context. Delegates, returns, stays clean.</div><div>11 / 26</div></div>
+  </section>
+
+  <section data-screen-label="07d Skill vs agent" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 1 · The building blocks</span><span>12 / 26</span></div><div>Skill vs. Agent</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">Skill <span style="color:var(--muted);">vs.</span> Agent.</div>
+      <div class="t-subtitle" style="color:var(--muted);max-width:1700px;">Two different tools. Knowing when to reach for which is the whole game.</div>
+
+      <table class="k compact" style="margin-top:26px;font-size:22px;">
+        <thead>
+          <tr><th style="width:22%"></th><th style="color:var(--good);">Skill</th><th style="color:var(--accent);">Agent</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="label">Mental model</td><td class="old">A recipe card</td><td class="new">A specialist chef</td></tr>
+          <tr><td class="label">Scope</td><td class="old">One repeatable procedure</td><td class="new">A role with judgment + tools</td></tr>
+          <tr><td class="label">Context cost</td><td class="old">Just the description (cheap)</td><td class="new">Runs on its own whiteboard (free to your context)</td></tr>
+          <tr><td class="label">Invocation</td><td class="old">Auto-loads when description matches, or <span class="t-mono">/name</span></td><td class="new">Delegated by role — "have the analyst…"</td></tr>
+          <tr><td class="label">Best for</td><td class="old">Same steps, different inputs</td><td class="new">Novel work · heavy research · cross-file synthesis</td></tr>
+          <tr><td class="label">Example</td><td class="old">"Audit this site with <span class="t-mono">/aeo-audit</span>"</td><td class="new">"Why did organic traffic drop 15% last week?"</td></tr>
+        </tbody>
+      </table>
+
+      <div class="t-body-lg" style="margin-top:22px;max-width:1750px;">
+        <span style="font-family:'Instrument Serif',serif;font-style:italic;">Rule of thumb —</span>
+        if you could write the steps out in advance, it's a <strong style="color:var(--good);">skill</strong>.
+        If you need <em>judgment</em> or would dump <em>a lot of files</em> into your window, it's an <strong style="color:var(--accent);">agent</strong>.
+      </div>
+    </div>
+    <div class="foot"><div>Skills codify procedures. Agents handle judgment and research.</div><div>12 / 26</div></div>
+  </section>
+
+  <section data-screen-label="07b Demos divider" class="slide accent">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 2 · Live demos</span><span>13 / 26</span></div><div>Agentic workflow · live</div></div>
+    <div class="body" style="justify-content:center;align-items:flex-start;">
+      <div class="t-eyebrow" style="color:rgba(255,255,255,.7);margin-bottom:28px;">Two live demos · agentic workflow</div>
+      <div class="hero-title" style="color:#F8F2EA;font-family:'Instrument Serif',serif;font-size:260px;line-height:.95;letter-spacing:-.02em;">Demos.</div>
+      <div class="t-subtitle" style="margin-top:40px;color:rgba(255,255,255,.85);max-width:1500px;font-size:36px;">
+        Same prompt. Two tools. Where does each land?
+      </div>
+      <div class="flex-row gap-md" style="margin-top:56px;font-family:'IBM Plex Mono',monospace;font-size:20px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75);">
+        <div>01 · GSC period-over-period</div>
+        <div style="color:rgba(255,255,255,.4);">→</div>
+        <div>02 · Video ad pipeline</div>
+      </div>
+    </div>
+    <div class="foot"><div></div><div>13 / 26</div></div>
+  </section>
+
+  <section data-screen-label="09 Demo 2 GSC" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 2 · Live demos</span><span>14 / 26</span></div><div>Google Search Console · period-over-period</div></div>
+    <div class="body gap-sm">
+      <div class="t-eyebrow">Same prompt · both tools</div>
+      <div class="t-title-sm" style="max-width:1700px;">"Call Google Search Console. Analyze user queries and page performance period-over-period for Grant SG. First two weeks of April vs. prior two weeks."</div>
+
+      <div class="demo code-wins" data-stepped style="margin-top:40px;">
+        <div class="cow">
+          <div class="hd">Cowork</div>
+          <h4 style="color:var(--bad);">Dead end.</h4>
+          <div class="result">
+            <div><span class="x">✗</span> No Google Search Console connector available</div>
+            <div style="margin-top:14px;color:var(--muted);">"I don't have access to Google Search Console."</div>
+          </div>
+        </div>
+        <div class="code">
+          <div class="hd">Claude Code · MCP</div>
+          <h4>A formatted report. Actionable.</h4>
+          <div class="result">
+            <div><span class="m">✓</span> MCP · Google Search Console → thousands of queries pulled</div>
+            <div><span class="m">✓</span> Period-over-period: impressions · clicks · CTR · position</div>
+            <div><span class="m">✓</span> Rising queries · declining pages · new opportunities</div>
+            <div style="margin-top:14px;color:var(--accent-soft);font-family:'IBM Plex Mono',monospace;font-size:18px;">→ Complete analysis in one run.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-body-lg" style="margin-top:28px;max-width:1700px;">
+        You're not limited to what Anthropic pre-builds. <em>You connect what you need.</em>
+      </div>
+    </div>
+    <div class="foot"><div></div><div>14 / 26</div></div>
+  </section>
+
+  <section data-screen-label="10 Demo 3 video ad" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 2 · Live demos</span><span>15 / 26</span></div><div>Video ad pipeline · HeyGen / Seedance</div></div>
+    <div class="body gap-sm">
+      <div class="t-eyebrow">Same prompt · both tools</div>
+      <div class="t-title-sm" style="max-width:1750px;">"Create a TikTok ad for this Tiket activity page. Local-looking avatar, real photos, VO throughout. Walk me through the plan first."</div>
+
+      <div class="demo code-wins" data-stepped style="margin-top:40px;">
+        <div class="cow">
+          <div class="hd">Cowork · advises</div>
+          <h4>A written plan. You execute.</h4>
+          <div class="result">
+            <div><span class="m">✓</span> Drafts script and storyboard</div>
+            <div><span class="x">✗</span> Sandbox browser can't reliably load the page</div>
+            <div><span class="x">✗</span> No HeyGen / Seedance integration out of the box</div>
+            <div><span class="x">✗</span> Can't chain scrape → script → video API → assembly in one run</div>
+            <div style="margin-top:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:17px;">→ You upload. You configure. You assemble.</div>
+          </div>
+        </div>
+        <div class="code">
+          <div class="hd">Claude Code · executes</div>
+          <h4>A production plan. Assets in hand.</h4>
+          <div class="result">
+            <div><span class="m">✓</span> Chrome MCP extension → real Tiket page (photos + copy)</div>
+            <div><span class="m">✓</span> Script: hook → highlights → CTA</div>
+            <div><span class="m">✓</span> MCP · HeyGen/Seedance → avatar, VO, animations</div>
+            <div><span class="m">✓</span> Orchestrates: scrape → script → API → assembly</div>
+            <div style="margin-top:12px;color:var(--accent-soft);font-family:'IBM Plex Mono',monospace;font-size:17px;">→ You review &amp; approve.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-body-lg" style="margin-top:24px;max-width:1750px;font-family:'Instrument Serif',serif;font-style:italic;">
+        Advisor → operating system. That is the shift.
+      </div>
+    </div>
+    <div class="foot"><div></div><div>15 / 26</div></div>
+  </section>
+
+  <section data-screen-label="11 The claude folder" class="slide dark">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 3 · The harness</span><span>16 / 26</span></div><div>Business context, persistent</div></div>
+    <div class="body gap-sm">
+      <div class="t-title" style="color:var(--paper);">Enabling business context to the LLM brain.<br/><span style="color:rgba(255,255,255,.6);">Persistently.</span></div>
+      <div class="t-subtitle" style="color:rgba(255,255,255,.7);max-width:1700px;">A structured folder is how Claude boots into your voice, your rules, your playbooks — every session, no re-briefing.</div>
+
+      <div class="flex-row gap-md" style="margin-top:32px;">
+        <div class="grow" style="padding:32px 36px;background:var(--paper-dark-2);border:1px solid rgba(255,255,255,.08);">
+<pre class="tree" style="color:var(--paper);font-size:18px;line-height:1.55;"><span class="mt">~/.claude/</span>
+├── <span class="c">CLAUDE.md</span>             <span class="mt">← constitution · 90 lines</span>
+├── <span class="c">settings.json</span>         <span class="mt">← permissions, hooks</span>
+├── <span class="c">hooks/</span>                <span class="mt">← auto-runs on events</span>
+│   ├── memory-extract.sh     <span class="mt">← save learnings</span>
+│   ├── pre-commit.sh
+│   └── session-start.sh
+├── <span class="c">agents/</span>               <span class="mt">← 2 global agents</span>
+├── <span class="c">commands/</span>             <span class="mt">← 60+ slash commands</span>
+└── <span class="c">skills/</span>               <span class="mt">← 70+ skills</span>
+
+<span class="mt">~/novastacks/.claude/</span>
+└── <span class="c">agents/</span>               <span class="mt">← 15 project specialists</span>
+    ├── linkedin-writer.md
+    ├── chief-of-staff.md
+    ├── marketing-data-analyst.md
+    ├── content-writer.md
+    └── …11 more</pre>
+        </div>
+        <div class="grow flex-col gap-sm" style="max-width:640px;color:var(--paper);">
+          <div class="t-body-lg" style="color:var(--paper);">60 commands.</div>
+          <div class="t-body-lg" style="color:var(--paper);">70 skills.</div>
+          <div class="t-body-lg" style="color:var(--paper);">15 project agents.</div>
+          <div class="t-body-lg" style="color:var(--paper);">A handful of hooks.</div>
+          <div class="rule-thick" style="background:rgba(255,255,255,.2);margin:12px 0;"></div>
+          <div class="t-body" style="color:rgba(255,255,255,.8);">Every new session, Claude reads this folder first — and shows up already knowing you.</div>
+          <div class="t-body" style="color:var(--accent-soft);font-family:'Instrument Serif',serif;font-style:italic;margin-top:8px;font-size:32px;line-height:1.25;">
+            The brain is the same for everyone. The harness is what makes it yours.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><div></div><div>16 / 26</div></div>
+  </section>
+
+  <section data-screen-label="14a Context window — what it is" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 3 · The harness</span><span>17 / 26</span></div><div>What it is</div></div>
+    <div class="body gap-sm">
+      <div class="t-eyebrow">The question it answers</div>
+      <div class="t-title-sm" style="max-width:1700px;color:var(--accent);font-style:italic;">
+        "Why does my AI forget things, produce inconsistent output, or drop steps mid-task?"
+      </div>
+      <div class="t-body-lg" style="margin-top:16px;max-width:1700px;color:var(--muted);">
+        Almost every frustration with Claude Code traces back to one concept: <span style="color:var(--ink);">the context window</span>. Before skills, before agents — you need this mental model.
+      </div>
+
+      <div class="flex-row gap-md" style="margin-top:32px;align-items:stretch;">
+        <div class="grow" style="padding:32px 36px;background:var(--paper-2);border-left:3px solid var(--good);">
+          <div class="t-eyebrow" style="color:var(--good);margin-bottom:14px;">What it IS</div>
+          <div class="t-body-lg" style="line-height:1.35;">
+            The <strong>total text</strong> Claude can reference while generating a response — including its own response.
+            <br/><br/>
+            Think of it as Claude's <em>working memory</em> for this conversation.
+          </div>
+          <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(20,18,16,.12);font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--muted);letter-spacing:.04em;">
+            Source: platform.claude.com/docs/build-with-claude/context-windows
+          </div>
+        </div>
+
+        <div class="grow" style="padding:32px 36px;background:var(--paper-2);border-left:3px solid var(--bad);">
+          <div class="t-eyebrow" style="color:var(--bad);margin-bottom:14px;">What it is NOT</div>
+          <div class="flex-col gap-sm" style="font-size:26px;line-height:1.4;">
+            <div><span style="color:var(--bad);font-family:'IBM Plex Mono',monospace;margin-right:10px;">✗</span>Claude's long-term knowledge</div>
+            <div><span style="color:var(--bad);font-family:'IBM Plex Mono',monospace;margin-right:10px;">✗</span>Unlimited</div>
+            <div><span style="color:var(--bad);font-family:'IBM Plex Mono',monospace;margin-right:10px;">✗</span>Persistent — it resets every new session unless you explicitly save it</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><div>The mental model: a working memory, not a brain.</div><div>17 / 26</div></div>
+  </section>
+
+  <section data-screen-label="14a2 Congestion signs" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 3 · The harness</span><span>18 / 26</span></div><div>How you know it's rotting</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">Signs your context is <em>congested.</em></div>
+      <div class="t-subtitle" style="color:var(--muted);max-width:1700px;">If you see these — adding <em>more</em> instructions won't fix it. Offload or reset.</div>
+
+      <table class="k compact" style="margin-top:24px;font-size:22px;">
+        <thead>
+          <tr><th style="width:44%">Symptom</th><th>What's happening</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Claude forgets an instruction you gave 20 turns ago</td><td class="old">Earlier content still in window — but attention is diluted</td></tr>
+          <tr><td>Output is shorter, more generic, less specific</td><td class="old">Context rot · accuracy degrading</td></tr>
+          <tr><td>Agents produce inconsistent results across runs</td><td class="old">Each invocation sees slightly different starting context</td></tr>
+          <tr><td>Plan steps get dropped mid-task</td><td class="old">Long turn counts push old instructions out of focus</td></tr>
+          <tr><td>Claude re-asks for info you already provided</td><td class="old">Recall failing despite info being "in context"</td></tr>
+          <tr><td>Inconsistent voice/tone in content work</td><td class="old">Earlier brand rules no longer weighted properly</td></tr>
+        </tbody>
+      </table>
+
+      <div class="t-body" style="margin-top:20px;max-width:1700px;font-family:'Instrument Serif',serif;font-style:italic;font-size:26px;color:var(--ink);">
+        Your instinct is to repeat yourself. <span style="color:var(--accent);">Don't.</span> Reset or offload — then continue.
+      </div>
+    </div>
+    <div class="foot"><div>Symptom ≠ bug. It's context physics.</div><div>18 / 26</div></div>
+  </section>
+
+  <section data-screen-label="14e Context rot" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 3 · The harness</span><span>19 / 26</span></div><div>The real problem · context rot</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">The real problem: <em>context rot.</em></div>
+      <div class="t-subtitle" style="color:var(--muted);max-width:1700px;">Bigger isn't better. Performance <em>degrades</em> as the window fills — even when everything technically fits.</div>
+
+      <div class="flex-row gap-md" style="margin-top:28px;align-items:stretch;">
+        <div class="grow" style="max-width:980px;">
+          <div class="t-eyebrow" style="margin-bottom:14px;">Accuracy drop as the whiteboard fills</div>
+          <div class="flex-col gap-xs" style="font-family:'IBM Plex Mono',monospace;font-size:20px;">
+            <div class="flex-row gap-sm" style="align-items:center;">
+              <div style="width:140px;color:var(--muted);">Turn 01</div>
+              <div class="bar grow"><i style="width:2%;"></i></div>
+              <div style="width:150px;text-align:right;">2% · clean</div>
+            </div>
+            <div class="flex-row gap-sm" style="align-items:center;">
+              <div style="width:140px;color:var(--muted);">Turn 05</div>
+              <div class="bar grow"><i style="width:15%;"></i></div>
+              <div style="width:150px;text-align:right;">15%</div>
+            </div>
+            <div class="flex-row gap-sm" style="align-items:center;">
+              <div style="width:140px;color:var(--muted);">Turn 15</div>
+              <div class="bar grow"><i style="width:75%;background:#D08A55;"></i></div>
+              <div style="width:150px;text-align:right;">75% ⚠</div>
+            </div>
+            <div class="flex-row gap-sm" style="align-items:center;">
+              <div style="width:140px;color:var(--accent);">Turn 20</div>
+              <div class="bar rot grow"><i style="width:95%;"></i></div>
+              <div style="width:150px;text-align:right;color:var(--bad);">95% · rot</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;padding:22px 28px;background:var(--paper-2);border-left:3px solid var(--good);max-width:1800px;">
+        <div class="t-eyebrow" style="color:var(--good);margin-bottom:14px;">How to prevent context rot</div>
+        <div class="flex-col gap-xs" style="font-size:22px;line-height:1.4;">
+          <div><span style="color:var(--good);font-family:'IBM Plex Mono',monospace;margin-right:10px;">✓</span><strong>Trim <span class="t-mono">CLAUDE.md</span></strong> — keep it short; every line costs space every turn.</div>
+          <div><span style="color:var(--good);font-family:'IBM Plex Mono',monospace;margin-right:10px;">✓</span><strong>Split procedures into skills</strong> — body loads only when invoked, not at startup.</div>
+          <div><span style="color:var(--good);font-family:'IBM Plex Mono',monospace;margin-right:10px;">✓</span><strong>Persist plans to <span class="t-mono">PROGRESS.md</span></strong> — on disk, survives every wipe.</div>
+          <div><span style="color:var(--good);font-family:'IBM Plex Mono',monospace;margin-right:10px;">✓</span><strong>Run <span class="t-mono">/compact</span></strong> when the session fills — summarises earlier turns; saves space, loses detail.</div>
+          <div><span style="color:var(--good);font-family:'IBM Plex Mono',monospace;margin-right:10px;">✓</span><strong>Run <span class="t-mono">/clear</span></strong> when switching projects — full wipe, fresh whiteboard.</div>
+          <div><span style="color:var(--good);font-family:'IBM Plex Mono',monospace;margin-right:10px;">✓</span><strong>Delegate heavy research to subagents</strong> — their own whiteboard; you get a summary.</div>
+        </div>
+        <div class="t-body" style="margin-top:14px;font-family:'Instrument Serif',serif;font-style:italic;font-size:22px;color:var(--muted);">
+          It's not about saving space. It's about <strong style="color:var(--ink);">output quality</strong>.
+        </div>
+      </div>
+    </div>
+    <div class="foot"><div>A full context window produces worse output than a clean one.</div><div>19 / 26</div></div>
+  </section>
+
+  <section data-screen-label="15 Post-mortem v2 v3" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 3 · The harness</span><span>20 / 26</span></div><div>Hallucinated report · rebuilt the skill</div></div>
+    <div class="body gap-sm">
+      <div class="t-title-sm">Shipped a hallucinated report.<br/><span style="color:var(--muted);">We didn't patch — we rebuilt the skill.</span></div>
+
+      <div class="arch" style="margin-top:20px;">
+        <div class="arch-col bad" style="padding:24px 28px;">
+          <div class="hd">v2 · Monolith · shipped errors</div>
+          <h4 style="font-size:28px;margin-bottom:12px;">1 agent · 1,791 lines · 1 context window</h4>
+          <div class="pipe" style="margin-top:4px;font-size:16px;">
+            <div class="ln" style="padding:6px 12px;">P0 · competitor discovery · ~5K</div>
+            <div class="ln" style="padding:6px 12px;">P1 · domain metrics · +15K</div>
+            <div class="ln" style="padding:6px 12px;">P2 · page crawling · +30K raw HTML</div>
+            <div class="ln" style="padding:6px 12px;">P3 · keyword analysis · +20K</div>
+            <div class="ln" style="padding:6px 12px;">P4 · lighthouse · +10K</div>
+            <div class="ln" style="padding:6px 12px;">P5 · LLM visibility · +12K</div>
+            <div class="ln" style="padding:6px 12px;">P6 · AEO scoring · +5K</div>
+            <div class="ln h" style="padding:6px 12px;">P7 · report generation · ~100K+</div>
+          </div>
+          <div style="margin-top:10px;font-size:16px;color:var(--bad);font-family:'IBM Plex Mono',monospace;">→ rules from P0 are drowning</div>
+        </div>
+
+        <div class="arch-col good" style="padding:24px 28px;">
+          <div class="hd">v3 · Decomposed · zero post-gate errors</div>
+          <h4 style="font-size:28px;margin-bottom:12px;">Orchestrator · 238 lines · delegates everything</h4>
+          <div class="pipe" style="margin-top:4px;font-size:16px;">
+            <div class="ln" style="padding:6px 12px;">COLLECT agent · 443 lines · fresh ctx</div>
+            <div class="ln" style="padding:6px 12px 6px 30px;">↳ writes to raw-data/</div>
+            <div class="ln gate" style="padding:6px 12px;">Gate 1 · validate_raw_data.py</div>
+            <div class="ln" style="padding:6px 12px;">REPORT agent · 474 lines · fresh ctx</div>
+            <div class="ln" style="padding:6px 12px 6px 30px;">↳ reads raw-data/ (canonical)</div>
+            <div class="ln gate" style="padding:6px 12px;">Gate 2 · validate_json_output.py</div>
+            <div class="ln gate" style="padding:6px 12px;">Gate 3 · validate_claims_vs_raw.py</div>
+          </div>
+          <div style="margin-top:10px;font-size:16px;color:#8CC196;font-family:'IBM Plex Mono',monospace;">→ cannot hallucinate past a Python exit code</div>
+        </div>
+      </div>
+
+      <div class="flex-row gap-md" style="margin-top:14px;">
+        <div class="grow" style="min-width:0;"><div class="t-eyebrow" style="font-size:17px;">Context at report</div><div class="t-body" style="margin-top:2px;font-size:21px;"><span style="color:var(--muted);">100–150K</span> → <span style="color:var(--accent);font-weight:500;">10–15K</span></div></div>
+        <div class="grow" style="min-width:0;"><div class="t-eyebrow" style="font-size:17px;">Validation</div><div class="t-body" style="margin-top:2px;font-size:21px;"><span style="color:var(--muted);">Bash, by agent</span> → <span style="color:var(--accent);font-weight:500;">3 Python gates</span></div></div>
+        <div class="grow" style="min-width:0;"><div class="t-eyebrow" style="font-size:17px;">Hallucinations</div><div class="t-body" style="margin-top:2px;font-size:21px;"><span style="color:var(--muted);">Keyword · CWV swap</span> → <span style="color:var(--accent);font-weight:500;">Zero post-Gate</span></div></div>
+      </div>
+
+
+    </div>
+    <div class="foot"><div>The skill wasn't the problem. The architecture was.</div><div>20 / 26</div></div>
+  </section>
+
+  <section data-screen-label="16b Learnings loop" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 3 · The harness</span><span>21 / 26</span></div><div>The learnings loop — how the agent gets better without retraining</div></div>
+    <div class="body gap-md">
+      <div class="t-title">How to get your agent / skill to get better <em>every run?</em></div>
+      <div class="t-subtitle" style="color:var(--muted);max-width:1750px;">
+        There's a tripwire your computer can fire every time Claude finishes a task — it catches what happened and writes it down. It's not just cleanup. It's how the agent <em>learns</em>.
+      </div>
+
+      <div class="flex-row gap-md" style="margin-top:36px;">
+        <div class="card grow">
+          <div class="head">What happens</div>
+          <h3>The system writes its own notes after each run.</h3>
+          <p>When Claude finishes, a hook fires — a small program <em>your</em> computer runs automatically. It catches what went wrong (or what worked), writes one line to <span class="t-mono-sm">~/.claude/CLAUDE.md</span> or <span class="t-mono-sm">MEMORY.md</span>, and the next session reads it back. The agent walks in <em>already knowing the lesson.</em></p>
+        </div>
+        <div class="card grow">
+          <div class="head">Why it isn't fine-tuning</div>
+          <h3>No weights. No GPU. No data team.</h3>
+          <p>Fine-tuning retrains the model. Expensive, slow, ML infra. The learnings loop just changes <em>what the model knows before it starts.</em> A shell script can do this. Marketing teams can do this.</p>
+        </div>
+        <div class="card accent-bg grow">
+          <div class="head">What it buys you</div>
+          <h3>The work compounds.</h3>
+          <p>Most agents stay flat — run 10 looks like run 1. This one's measurably sharper at run 10. Every correction logged = one less repeated mistake across every future session. <em>Never let a correction evaporate.</em></p>
+        </div>
+      </div>
+
+      <div class="flex-row gap-md" style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(20,18,16,.12);">
+        <div class="grow" style="min-width:0;">
+          <div class="t-body" style="font-style:italic;color:var(--muted);">Same mistakes every time</div>
+          <div class="t-body" style="margin-top:4px;color:var(--accent);">→ Mistakes stop repeating</div>
+        </div>
+        <div class="grow" style="min-width:0;">
+          <div class="t-body" style="font-style:italic;color:var(--muted);">Needs a data team to improve</div>
+          <div class="t-body" style="margin-top:4px;color:var(--accent);">→ A text file does the job</div>
+        </div>
+        <div class="grow" style="min-width:0;">
+          <div class="t-body" style="font-style:italic;color:var(--muted);">Run 10 looks like run 1</div>
+          <div class="t-body" style="margin-top:4px;color:var(--accent);">→ Run 10 is sharper than run 1</div>
+        </div>
+      </div>
+
+      <div class="t-body-lg" style="margin-top:14px;max-width:1750px;">
+        The harness catches mistakes. The loop <em>remembers</em> them. That's why the system gets better the more you use it.
+      </div>
+    </div>
+    <div class="foot"><div>Hook + file = the cheapest learning system you'll ever build.</div><div>21 / 26</div></div>
+  </section>
+
+  <section data-screen-label="PLAYBOOK A framework" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>THE FRAMEWORK</span><span>22 / 26</span></div><div>Tools · Skills · Permission</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">Tools and skills are the easy part. <em>Permission is the moat.</em></div>
+      <div class="t-subtitle" style="color:var(--muted);max-width:1780px;margin-top:10px;">Speed isn't bought — it's who you let act without asking. Every company wins the first two layers and stalls on the third.</div>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-top:40px;">
+        <div style="display:flex;align-items:center;gap:32px;padding:24px 34px;background:var(--paper-2);border-left:4px solid var(--muted);">
+          <div style="flex:0 0 380px;font-family:'Instrument Serif',serif;font-size:46px;line-height:1;">Tools <span style="color:var(--muted);font-size:28px;">→ Equip</span></div>
+          <div class="t-body" style="flex:1;">Buy access. Everyone has it — and so does your competitor, tomorrow.</div>
+          <div style="flex:0 0 250px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);">Days</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:32px;padding:24px 34px;background:var(--paper-2);border-left:4px solid var(--sage);">
+          <div style="flex:0 0 380px;font-family:'Instrument Serif',serif;font-size:46px;line-height:1;">Skills <span style="color:var(--muted);font-size:28px;">→ Use</span></div>
+          <div class="t-body" style="flex:1;">Build agentic workflows for your real work. A team can learn this.</div>
+          <div style="flex:0 0 250px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--sage);">A quarter</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:32px;padding:30px 34px;background:var(--accent);color:#F8F2EA;">
+          <div style="flex:0 0 380px;font-family:'Instrument Serif',serif;font-size:46px;line-height:1;color:#F8F2EA;">Permission <span style="opacity:.85;font-size:28px;">→ Rewire</span></div>
+          <div class="t-body" style="flex:1;color:#F8F2EA;">The number of people who must say yes before anything happens. Decision rights, role boundaries, approval layers, default stance.</div>
+          <div style="flex:0 0 250px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:#F8F2EA;">The year · everyone stalls</div>
+        </div>
+      </div>
+      <div style="margin-top:26px;font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase;">
+        ICONIQ 2026 · AI-native orgs ~9× flatter &nbsp;·&nbsp; Korn Ferry · 41% have cut management tiers &nbsp;·&nbsp; McKinsey · 2–3 people direct 50–100 agents
+      </div>
+    </div>
+    <div class="foot"><div>The first two you can buy. The third is your job.</div><div>22 / 26</div></div>
+  </section>
+
+  <section data-screen-label="PLAYBOOK B revenue" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>WHERE LEADERS GET IT WRONG</span><span>23 / 26</span></div><div>Point AI at revenue, not headcount</div></div>
+    <div class="body gap-sm">
+      <div class="t-title">Point AI at revenue — <em>not at headcount.</em></div>
+      <div class="t-subtitle" style="color:var(--muted);max-width:1780px;margin-top:10px;">Efficiency is the floor. Growth is the ceiling. Cut cost, and you cap your upside at the cost you cut.</div>
+      <div class="flex-row gap-md" style="margin-top:42px;align-items:stretch;">
+        <div class="grow" style="padding:28px 32px;background:var(--paper-2);border-top:3px solid var(--bad);">
+          <div class="t-eyebrow" style="color:var(--bad);margin-bottom:16px;">The layoff overdose</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:34px;line-height:1.08;margin-bottom:12px;">Banking AI as headcount savings.</div>
+          <div class="t-body" style="color:var(--ink-2);">A one-time cut, capped upside — and you gut the very capacity you'd need to grow.</div>
+        </div>
+        <div class="grow" style="padding:28px 32px;background:var(--paper-2);border-top:3px solid var(--bad);">
+          <div class="t-eyebrow" style="color:var(--bad);margin-bottom:16px;">Transformation theater</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:34px;line-height:1.08;margin-bottom:12px;">Hiring a team to "run the AI transformation."</div>
+          <div class="t-body" style="color:var(--ink-2);">A new bureaucracy bolted onto the old one. Your revenue operators should wield it — not a central AI PMO.</div>
+        </div>
+        <div class="grow" style="padding:28px 32px;background:var(--paper-dark);color:var(--paper);border-top:3px solid var(--good);">
+          <div class="t-eyebrow" style="color:#8FB996;margin-bottom:16px;">The win</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:34px;line-height:1.08;margin-bottom:12px;color:var(--paper);">Same people, pointed at growth.</div>
+          <div class="t-body" style="color:rgba(255,255,255,.82);">ICONIQ's winners aren't leaner — they make <strong style="color:var(--accent-soft);">~2× net-new revenue per head.</strong></div>
+        </div>
+      </div>
+      <div class="t-body-lg" style="margin-top:32px;max-width:1780px;">Efficiency is a byproduct. <em>Make growth the goal.</em></div>
+    </div>
+    <div class="foot"><div>Cut cost and you stop at the floor. Point it at revenue — the ceiling is uncapped.</div><div>23 / 26</div></div>
+  </section>
+
+  <section data-screen-label="TAKEAWAY org reshape" class="slide">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>THE TAKEAWAY</span><span>24 / 26</span></div><div>What this means for how you organize work</div></div>
+    <div class="body" style="justify-content:center;">
+      <div class="t-eyebrow" style="margin-bottom:28px;">What this means for your organization</div>
+      <div class="hero-title" style="font-size:150px;line-height:.95;max-width:1720px;">The org chart is being <em style="color:var(--accent);">rewritten.</em></div>
+      <div class="t-subtitle" style="margin-top:40px;color:var(--muted);max-width:1640px;">From doing the work to directing it. One operator runs a system of agentic workflows. The reusable workflow — not the tool, not the headcount — is the unit of value.</div>
+      <div class="t-body-lg" style="margin-top:34px;max-width:1720px;">You don't have to build them yourself. But the leaders who understand them will decide <em>who does</em> — and how their teams are shaped around the work.</div>
+    </div>
+    <div class="foot"><div>The unit of value is the workflow, not the tool.</div><div>24 / 26</div></div>
+  </section>
+
+  <section data-screen-label="27 Team orchestration — Git is the new Notion" class="slide dark">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>SECTION 4 · Team orchestration</span><span>25 / 26</span></div><div>Team orchestration · coordination layer</div></div>
+    <div class="body" style="justify-content:center;">
+      <div class="t-eyebrow" style="margin-bottom:28px;">Team orchestration · five commands, smaller than Notion</div>
+      <div class="hero-title" style="color:var(--paper);font-size:150px;line-height:.95;">
+        Team orchestration.<br/><span style="font-family:'Instrument Serif',serif;font-size:120px;">Git is the new <em style="color:var(--accent-soft);">Notion.</em></span>
+      </div>
+      <table class="k dark" style="margin-top:56px;max-width:1500px;">
+        <tbody>
+          <tr><td class="label" style="width:28%;"><span class="t-mono">git pull</span></td><td class="old">Hit refresh in Google Docs.</td></tr>
+          <tr><td class="label"><span class="t-mono">git status</span></td><td class="old">See what's changed since last save.</td></tr>
+          <tr><td class="label"><span class="t-mono">git commit</span></td><td class="old">"Save version" with a note.</td></tr>
+          <tr><td class="label"><span class="t-mono">git push</span></td><td class="old">Share. Publish.</td></tr>
+          <tr style="border-bottom:0;"><td class="label accent" style="color:var(--accent-soft);"><span class="t-mono">git log</span></td><td class="new accent" style="color:var(--paper);">The version history. Who changed what, when.</td></tr>
+        </tbody>
+      </table>
+      <div class="t-body" style="margin-top:40px;color:rgba(255,255,255,.7);max-width:1500px;">
+        Without this, you end up with 100 versions of the "affiliate performance report" — everyone on your team doing the <em>same same but different</em>.
+      </div>
+    </div>
+    <div class="foot"><div></div><div>25 / 26</div></div>
+  </section>
+
+  <section data-screen-label="32 Closing" class="slide dark">
+    <div class="chrome"><div class="left"><span><span class="dot"></span>CLOSE</span><span>26 / 26</span></div><div>University of Pennsylvania · 2026</div></div>
+    <div class="body" style="justify-content:center;align-items:center;">
+      <div class="flex-row" style="align-items:center;justify-content:space-between;width:100%;gap:72px;">
+        <div style="flex-shrink:0;">
+          <div class="t-eyebrow" style="margin-bottom:20px;">End of session</div>
+          <div class="hero-title" style="color:var(--paper);font-size:120px;line-height:.92;letter-spacing:-.025em;">Thank you.</div>
+          <div class="t-subtitle" style="margin-top:24px;color:var(--accent-soft);font-family:'Instrument Serif',serif;font-style:italic;font-size:44px;line-height:1.05;">
+            Now go build<br/>something.
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:24px;flex-shrink:0;">
+          <div class="t-eyebrow" style="color:var(--accent-soft);">Follow us · scan to connect</div>
+          <div class="flex-row gap-lg" style="align-items:flex-start;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:18px;">
+              <img src="screenshots/linkedin-qr-tina.jpg" alt="Tina Chu LinkedIn QR" style="width:520px;border-radius:24px;display:block;"/>
+              <div class="t-mono-sm" style="color:rgba(255,255,255,.85);letter-spacing:.04em;font-size:22px;">novastacks-ai.com</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><div></div><div>26 / 26</div></div>
+  </section>
+
+</deck-stage>
+
+<script src="deck-stage.js"></script>
+<script>
+  // Step-reveal for demo comparison slides: each ArrowRight / Space / click
+  // reveals the Cowork box, then the Claude Code box, before advancing.
+  (function(){
+    const stage = document.querySelector('deck-stage');
+    if (!stage) return;
+
+    let currentSlide = null;
+
+    function resetAllStepped(){
+      document.querySelectorAll('.demo[data-stepped] > .cow, .demo[data-stepped] > .code')
+        .forEach(el => el.classList.remove('reveal'));
+    }
+
+    function nextHiddenBox(){
+      if (!currentSlide) return null;
+      const demo = currentSlide.querySelector('.demo[data-stepped]');
+      if (!demo) return null;
+      return demo.querySelector(':scope > .cow:not(.reveal), :scope > .code:not(.reveal)');
+    }
+
+    stage.addEventListener('slidechange', (e) => {
+      resetAllStepped();
+      currentSlide = e.detail && e.detail.slide ? e.detail.slide : null;
+    });
+
+    // Capture-phase keydown intercepts forward-nav keys while a box is still hidden.
+    window.addEventListener('keydown', (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      const forward = e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Spacebar';
+      if (!forward) return;
+      const box = nextHiddenBox();
+      if (box) {
+        box.classList.add('reveal');
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    // Click anywhere on a stepped demo also reveals the next box.
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest || !e.target.closest('.demo[data-stepped]')) return;
+      const box = nextHiddenBox();
+      if (box) box.classList.add('reveal');
+    });
+  })();
+
+  // Click-to-zoom for images marked .zoomable — opens a full-screen lightbox
+  // so the trainer can enlarge dense visuals (e.g. the product map) live.
+  (function(){
+    const lb = document.createElement('div');
+    lb.id = 'zoom-lightbox';
+    lb.innerHTML = '<img alt="" />';
+    Object.assign(lb.style, {
+      position:'fixed', inset:'0', background:'rgba(10,8,6,.92)',
+      display:'none', alignItems:'center', justifyContent:'center',
+      zIndex:'9999', cursor:'zoom-out', padding:'40px'
+    });
+    const lbImg = lb.querySelector('img');
+    Object.assign(lbImg.style, {
+      maxWidth:'100%', maxHeight:'100%', objectFit:'contain',
+      boxShadow:'0 10px 40px rgba(0,0,0,.5)', background:'#fff'
+    });
+    document.body.appendChild(lb);
+
+    function open(src, alt){
+      lbImg.src = src;
+      lbImg.alt = alt || '';
+      lb.style.display = 'flex';
+    }
+    function close(){
+      lb.style.display = 'none';
+      lbImg.src = '';
+    }
+
+    document.addEventListener('click', (e) => {
+      const img = e.target.closest && e.target.closest('img.zoomable');
+      if (!img) return;
+      e.preventDefault();
+      e.stopPropagation();
+      open(img.src, img.alt);
+    });
+    lb.addEventListener('click', close);
+
+    // While the lightbox is open, swallow deck-nav keys so arrows/space
+    // don't advance the slide underneath.
+    window.addEventListener('keydown', (e) => {
+      if (lb.style.display === 'none') return;
+      if (e.key === 'Escape') { close(); e.preventDefault(); e.stopPropagation(); return; }
+      if (['ArrowRight','ArrowLeft','ArrowUp','ArrowDown','PageUp','PageDown',' ','Spacebar'].includes(e.key)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+  })();
+</script>
+</body>
+</html>
