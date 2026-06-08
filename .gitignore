@@ -1,4 +1,2 @@
-# private — speaker notes and the laptop presenter/launcher stay local
-upenn-ai-panel-script.md
-presenter.html
+# local-only — the laptop launcher (Pages serves over HTTPS, so it's not needed online)
 start-presenter.command

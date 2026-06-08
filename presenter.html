@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPenn AI Panel — Presenter View</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#15130f;color:#eee;font-family:-apple-system,'Segoe UI',Helvetica,sans-serif;overflow:hidden}
+  #app{display:flex;height:100vh}
+  /* left: slide */
+  #left{flex:0 0 60%;display:flex;flex-direction:column;border-right:1px solid #332e26;min-width:0}
+  #stagewrap{flex:1;display:flex;align-items:center;justify-content:center;background:#0d0b09;overflow:hidden;position:relative}
+  #stage{transform-origin:center center}
+  #stage .slide{box-shadow:0 18px 50px -20px rgba(0,0,0,.8) !important;box-sizing:border-box!important;width:1920px!important;height:1080px!important;display:flex!important;flex-direction:column!important}
+  /* right: notes */
+  #right{flex:1;display:flex;flex-direction:column;min-width:0;background:#1c1914}
+  #notehead{padding:16px 22px 10px;border-bottom:1px solid #332e26}
+  #noteslide{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#c9a89c}
+  #notetitle{font-family:'Instrument Serif',Georgia,serif;font-size:26px;margin-top:6px;color:#f3efe6;line-height:1.15}
+  #notes{flex:1;overflow-y:auto;padding:22px 26px;font-size:32px;line-height:1.55;color:#dcd6ca}
+  #notes b{color:#fff}
+  #notes em{color:#e8a08c;font-style:italic}
+  #notes .lbl{color:#d8442a;font-weight:700}
+  #notes p{margin:0 0 13px}
+  #notes li{margin:0 0 7px 18px}
+  #notes .empty{color:#7a7264;font-style:italic}
+  /* bottom bar */
+  #bar{flex:0 0 auto;display:flex;align-items:center;gap:14px;padding:10px 18px;background:#1c1914;border-top:1px solid #332e26}
+  #bar button{background:#2a251d;color:#eee;border:1px solid #4a4334;border-radius:7px;padding:9px 16px;font-size:15px;cursor:pointer}
+  #bar button:hover{background:#3a3328}
+  #counter{font-family:'IBM Plex Mono',monospace;font-size:14px;color:#b8b0a0;min-width:90px}
+  #bar .sp{flex:1}
+  #bar a{color:#c9a89c;font-size:13px;text-decoration:none;border:1px solid #4a4334;border-radius:7px;padding:8px 12px}
+  #bar a:hover{color:#fff}
+  #thumb{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a8273;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;font-size:20px;color:#b8b0a0;background:#15130f;z-index:50}
+  kbd{background:#2a251d;border:1px solid #4a4334;border-radius:4px;padding:1px 6px;font-size:12px;font-family:'IBM Plex Mono'}
+  /* audience mode (?audience=1): clean full-screen slide for the projector, no notes/bar */
+  body.audience #right{display:none!important}
+  body.audience #left{flex:1 1 100%!important;border:none!important}
+  body.audience #stagewrap{background:#000}
+</style>
+</head>
+<body>
+<div id="loading">Loading deck + notes…</div>
+<div id="app" style="display:none">
+  <div id="left">
+    <div id="stagewrap"><div id="stage"></div></div>
+  </div>
+  <div id="right">
+    <div id="notehead"><div id="noteslide">—</div><div id="notetitle">—</div></div>
+    <div id="notes"></div>
+    <div id="bar">
+      <button id="prev">← Prev</button>
+      <button id="next">Next →</button>
+      <span id="counter">— / —</span>
+      <span id="thumb"></span>
+      <span class="sp"></span>
+      <button id="reload" title="Re-fetch the .md notes">↻ Reload notes</button>
+      <button id="aud" title="Open a clean full-screen slide window for the projector — it follows this presenter">⧉ Audience screen</button>
+      <a href="upenn-ai-panel.html" target="_blank">Open deck for projecting ↗</a>
+    </div>
+  </div>
+</div>
+<script>
+const DECK='upenn-ai-panel.html';
+const NOTES='upenn-ai-panel-script.md';
+let slides=[], slideNum=[], slideTitle=[], notesArr=[], idx=0;
+// ── presenter↔projector sync ──
+const AUDIENCE=new URLSearchParams(location.search).has('audience');
+const CH=('BroadcastChannel' in window)?new BroadcastChannel('present-upenn'):null;
+if(AUDIENCE) document.body.classList.add('audience');
+
+function mdInline(t){
+  t=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t=t.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+  t=t.replace(/(^|[^*])\*([^*]+?)\*/g,'$1<em>$2</em>');
+  t=t.replace(/`(.+?)`/g,'<code style="background:#2a251d;padding:1px 5px;border-radius:3px">$1</code>');
+  t=t.replace(/<b>(Say|Facilitate|On slide|On the slide|Example|Exercise|Lecturer script)([^<]*)<\/b>/g,'<b class="lbl">$1$2</b>');
+  return t;
+}
+function mdToHtml(md){
+  if(!md) return '<p class="empty">No note for this slide yet — add a section in the .md file.</p>';
+  const lines=md.split('\n'); let out=[], inList=false;
+  for(let ln of lines){
+    ln=ln.trim();
+    if(!ln){ if(inList){out.push('</ul>');inList=false;} continue; }
+    if(ln==='---'){ out.push('<hr style="border:none;border-top:1px solid #332e26;margin:14px 0">'); continue; }
+    if(/^[-•]\s+/.test(ln)){ if(!inList){out.push('<ul>');inList=true;} out.push('<li>'+mdInline(ln.replace(/^[-•]\s+/,''))+'</li>'); continue; }
+    if(inList){out.push('</ul>');inList=false;}
+    out.push('<p>'+mdInline(ln)+'</p>');
+  }
+  if(inList)out.push('</ul>');
+  return out.join('');
+}
+
+function parseNotes(md){
+  // split on '### ' headers
+  const parts=md.split(/\n###\s+/); parts.shift();
+  const blocks=parts.map(p=>{
+    const nl=p.indexOf('\n');
+    const header=(nl<0?p:p.slice(0,nl)).trim();
+    const body=(nl<0?'':p.slice(nl+1)).replace(/\n#.*$/s,'').trim();
+    let nums=[];
+    const m=header.match(/[\[\{](\d+)[\]\}]/); if(m)nums.push(+m[1]);
+    // clean header for display
+    const disp=header.replace(/^[\[\{]\d+[\]\}]\s*/,'').replace(/^(DIVIDER|COVER|END)\s*[—-]?\s*/,'').trim()||header;
+    return {header,disp,body,nums,numbered:nums.length>0};
+  });
+  return blocks;
+}
+
+function align(blocks){
+  // 1:1 order alignment — Nth note block ↔ Nth slide (robust to badge renumbering)
+  return slides.map((_,i)=> blocks[i] || null);
+}
+
+function show(i,_bcast){
+  idx=Math.max(0,Math.min(slides.length-1,i));
+  const st=document.getElementById('stage');
+  st.innerHTML=''; st.appendChild(slides[idx].cloneNode(true));
+  // scale to fit (slides authored at 1920×1080)
+  const wrap=document.getElementById('stagewrap');
+  const sw=wrap.clientWidth-32, sh=wrap.clientHeight-32;
+  const scale=Math.min(sw/1920, sh/1080);
+  st.style.transform='scale('+scale+')';
+  st.style.width='1920px'; st.style.height='1080px';
+  // note
+  const n=notesArr[idx];
+  document.getElementById('noteslide').textContent = (slideNum[idx]!=null? 'Slide '+slideNum[idx]+' / '+slides.length : (n?n.header.split(/[—-]/)[0].trim():'—'));
+  document.getElementById('notetitle').innerHTML = n? mdInline(n.disp) : slideTitle[idx]||'—';
+  document.getElementById('notes').innerHTML = mdToHtml(n?n.body:'');
+  document.getElementById('notes').scrollTop=0;
+  document.getElementById('counter').textContent=(idx+1)+' / '+slides.length;
+  const nextT = idx+1<slides.length ? (slideTitle[idx+1]||'') : '— end —';
+  document.getElementById('thumb').textContent='Next: '+nextT;
+  if(CH && _bcast!==false && !AUDIENCE) CH.postMessage({idx:idx});
+}
+
+async function loadNotes(){
+  try{ const md=await (await fetch(NOTES+'?t='+Date.now())).text(); notesArr=align(parseNotes(md)); show(idx); }
+  catch(e){ console.warn('notes load failed',e); }
+}
+
+async function fetchDeck(){
+  for(const u of [DECK,'index.html']){
+    try{ const r=await fetch(u); if(r.ok) return await r.text(); }catch(e){}
+  }
+  throw new Error('deck file not found (tried '+DECK+' and index.html)');
+}
+async function init(){
+  const html=await fetchDeck();
+  // inject all <style> blocks from the deck
+  const styles=[...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m=>m[1]).join('\n');
+  const st=document.createElement('style'); st.textContent=styles; document.head.appendChild(st);
+  // the deck's own body{...} leaks in via the injected styles — re-assert presenter layout so the
+  // slide can use the full screen (esp. the audience window). Appended last → wins.
+  const fix=document.createElement('style');
+  fix.textContent='html,body{display:block!important;align-items:stretch!important;justify-content:flex-start!important;margin:0!important;padding:0!important;gap:0!important;height:100%!important;overflow:hidden!important;background:#15130f!important}#app{width:100%!important;display:flex!important}';
+  document.head.appendChild(fix);
+  // pull the deck's Google Fonts stylesheet link
+  const fl=html.match(/<link href="https:\/\/fonts[^"]+"/); if(fl){const l=document.createElement('link');l.rel='stylesheet';l.href=fl[0].match(/href="([^"]+)"/)[1];document.head.appendChild(l);}
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const els=doc.querySelectorAll('section.slide');
+  els.forEach(el=>{
+    const node=el.cloneNode(true);
+    slides.push(node);
+    const foot=[...node.querySelectorAll('div,span')].map(x=>x.textContent).find(t=>/^\d+\s*\/\s*\d+$/.test(t.trim()));
+    slideNum.push(foot ? +foot.trim().split('/')[0] : null);
+    const h=node.querySelector('.t-title, .hero-title, h1, h2, .t-eyebrow');
+    slideTitle.push(h?h.textContent.trim().replace(/\s+/g,' ').slice(0,64):'');
+  });
+  await loadNotes();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='flex';
+  // optional ?s=N deep-link to start on a given slide (handy for rehearsing one section)
+  const sParam=parseInt(new URLSearchParams(location.search).get('s'),10);
+  show(Number.isFinite(sParam)? sParam-1 : 0);
+}
+document.getElementById('prev').onclick=()=>show(idx-1);
+document.getElementById('next').onclick=()=>show(idx+1);
+document.getElementById('reload').onclick=loadNotes;
+document.getElementById('aud').onclick=()=>{ window.open(location.pathname+'?audience=1','upenn-audience','width=1280,height=740'); if(CH) setTimeout(()=>CH.postMessage({idx:idx}),1200); };
+if(CH){ CH.onmessage=e=>{ const d=e.data||{};
+  if(d.req){ if(!AUDIENCE && slides.length) CH.postMessage({idx:idx}); return; }
+  if(d.idx!=null && d.idx!==idx){ show(d.idx,false); } };
+  if(AUDIENCE){ let n=0,t=setInterval(()=>{ CH.postMessage({req:1}); if(++n>6)clearInterval(t); },500); } }
+window.addEventListener('keydown',e=>{
+  if(AUDIENCE) return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')show(idx+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')show(idx-1);
+});
+window.addEventListener('resize',()=>show(idx));
+init();
+</script>
+</body>
+</html>
