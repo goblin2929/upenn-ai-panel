@@ -3,7 +3,7 @@
 *Agentic AI Workflows · Tina Chu · University of Pennsylvania*
 Through-line: **Most companies don't have a technology problem. They have a trust problem — they can't yet verify an agent enough to stop supervising it.** Tools and skills take a quarter; that verification takes a year. The unit of value is the agentic workflow, not the tool and not the headcount.
 
-28 slides · ~20–25 min at a comfortable pace. One note per slide, in deck order. Concrete before abstract: open on the example, then the idea. Vary the openers; no formula.
+29 slides · ~20–25 min at a comfortable pace. One note per slide, in deck order. Concrete before abstract: open on the example, then the idea. Vary the openers; no formula.
 
 ---
 
@@ -19,76 +19,79 @@ Through-line: **Most companies don't have a technology problem. They have a trus
 ### [04] How AI changes marketing
 **Say:** "We’ve talked about how the marketer’s job is changing. Now watch it hit an actual channel — the one everyone here already knows: search. In the last two years it quietly split in two, and most brands are still optimising for only half of it."
 
-### [05] AEO and SEO aren’t the same
+### [05] The terms: GEO & AEO
+**Say:** "Two bits of vocabulary you’ll hear, often used interchangeably. GEO — generative engine optimisation — getting your content surfaced inside an AI-generated answer. AEO — answer engine optimisation, sometimes called AI search optimisation — being the source the answer engine actually picks. In practice they overlap: both just mean optimising to be cited by the AI, not only ranked by Google. I’ll mostly say AEO."
+
+### [06] AEO and SEO aren’t the same
 **Say:** "Here’s the split. SEO is the game you know — rank in the ten blue links, the customer scrolls and clicks. AEO, answer engine optimisation, is the new one: get named inside the answer ChatGPT or Google’s AI Overview writes, where the customer never sees a list at all. They overlap less than you’d think — only about a quarter to three-quarters of AI-Overview citations also show up in the classic results. And the engines disagree: in one test for ‘SaaS for freight forwarders in Asia’, fewer than twenty percent of brands were cited by both ChatGPT and Google. Do only SEO and you’re invisible in the place buyers increasingly start. That’s the shift you design for."
 
-### [06] SEO isn’t dying
+### [07] SEO isn’t dying
 **Say:** "Before anyone writes off SEO — don’t. This is a normal Google results page, the classic ten blue links, and it isn’t going anywhere. AEO doesn’t replace SEO; it sits on top of it. The same fundamentals — clear content, authority, structure — are exactly what make you eligible to be cited by the AI in the first place. So it isn’t SEO or AEO. It’s SEO as the foundation, AEO as the new layer on top."
 
-### [07] The AI names us first — Novastacks
+### [08] The AI names us first — Novastacks
 **Say:** "And here’s a real one — our own. Search ‘best AEO agency Singapore’ and Google’s AI Overview names Novastacks first, right inside the answer. A new customer finds us there — not by scrolling ten blue links, not by clicking an ad. That’s AEO working. The point isn’t that it’s us; it’s that this is now winnable, and most of your competitors aren’t even playing for it yet."
 
-### [08] Automation · Augmentation · Agency
+### [09] Automation · Augmentation · Agency
 **Say:** "One mental model saves a lot of confusion, because people put all of this under one word, 'AI', and then make bad calls. There are three distinct modes. Automation: a human wires a fixed flow and the machine repeats it exactly, every time. Zapier, n8n. Good for high-volume, predictable work. Augmentation: you do the work with the AI alongside you. You prompt, it drafts, you judge, you refine, and you stay in the loop on every turn. That's most of what people mean by 'using ChatGPT'. Agency: you set the rules and the boundaries, and the AI decides the steps inside them. It looks, decides, adjusts, and reports back to you. Now let me give you my honest read, because the conversation right now is loud in the wrong place. The vibe is all about full automation and fully autonomous agents, work that supposedly runs with no human in it. Be honest about your own organization: how much real work actually ships without a senior person reviewing it first? Almost none. The mode quietly doing the most real work, and the one most underestimated, is the middle one. Augmentation. Human and agent co-creating, with judgment staying in the loop. Even the agentic workflows I'll show you in a minute, the ones that look the most autonomous, end the same way: with me reviewing and approving before anything goes out. So the skill is not chasing full autonomy. It's matching the mode to the task, and being clear-eyed that the durable pattern is a senior person directing a capable system, not removing the person from it."
 
-### [09] Claude has 3 interfaces
+### [10] Claude has 3 interfaces
 **Say:** "One more piece of orientation, then we get concrete. Whatever AI you use, you meet it in one of three places, and they are not interchangeable. A chat window, a smart colleague you message, living on their servers, where you paste things in and out. A sandboxed assistant that can use a computer, click, type, browse, but inside a walled-off space. The third is a developer-grade version that runs on your own machine with full access to your files and tools. Left to right, you trade convenience for power. The workflows I'm about to show you live on the right."
 
-### [10] Tool Use
+### [11] Tool Use
 **Say:** "This is the idea that turns a chatbot into something that can actually do things, and it's simpler than it sounds. On its own, a language model is text in, text out. It can talk about your data but it cannot touch it. Tool use is the moment the model says 'call this tool' and your computer runs it. Anthropic draws it as three arms off the model. Retrieval, to look things up, like pull last week's traffic. Tools, to take an action, like edit a file. Memory, to remember across turns. Once a model can call tools, the gap between talking about the work and doing it closes. Everything after this is built on that one move."
 
-### [11] When to use a skill
+### [12] When to use a skill
 **Say:** "So how do you teach one of these systems to do your work. Start with the smallest building block, a skill, and the rule for when you need one is blunt. If you find yourself explaining the same thing to the AI twice, that's a skill waiting to be written. Every PR review, you re-describe how you want feedback structured. Every brand post, you re-paste your voice rules. Every new client, you re-explain your audit method. The second time you say it, write it down once. That is the whole trigger."
 
-### [12] What is a skill
+### [13] What is a skill
 **Say:** "Concretely, a skill is a folder of instructions the AI can find and use on its own. It's a plain text file with a name and a short description of when to use it. This is a real one from my setup, called action-tracker. Its description reads: manage my action items in Airtable, triggers on phrases like 'mark X as done'. The work happens in the matching. When I type 'mark the Tiket deck as done', the AI reads that description, sees the match, runs the skill, and updates Airtable. I never opened the file or named the skill. I taught it once, and it holds every session after. That's the win: you stop repeating yourself."
 
-### [13] Agent — a specialist with its own whiteboard
+### [14] Agent — a specialist with its own whiteboard
 **Say:** "Now the building block one level up, the agent. If a skill is a recipe card, an agent is a specialist you hand a whole job to. It's a spec with a role, a set of tools, and instructions, and it spins up its own fresh workspace, does the work, and hands you back only the summary. This is my marketing-data-analyst. Its job is to investigate traffic drops, it has my analytics tools, and when I say 'find out why traffic fell last week', it goes off, works through twenty files in its own space, and returns a brief. None of that mess lands on my desk. That last part matters more than it sounds, and the next few slides show why."
 
-### [14] Skill vs. Agent
+### [15] Skill vs. Agent
 **Say:** "So when do you reach for which. The rule settles it every time. A skill is a recipe: one repeatable procedure, cheap, for when the steps are fixed and only the inputs change. 'Audit this site.' An agent is a specialist chef: a role with judgment and its own tools, for novel work or heavy research that would otherwise bury you. 'Why did organic traffic drop fifteen percent.' Simplest version: if you can write the steps out in advance, it's a skill. If it needs judgment, or it would dump a hundred files into your lap, it's an agent."
 
-### [15] DIVIDER — Demos
+### [16] DIVIDER — Demos
 **Say:** "Enough theory. Two of these on real work now, same prompt each time, so you can watch where a simple tool hits a wall and an agentic workflow keeps going. That gap is the whole argument for why this is a different category, not a better chatbot."
 
-### [16] Demo — Google Search Console
+### [17] Demo — Google Search Console
 **Say:** "First one. Same prompt to both tools: pull Google Search Console, compare two weeks of April against the prior two weeks for this client. The simple sandboxed assistant hits a wall. It has no connector to Search Console, so it just says 'I don't have access'. The agentic version connects to Search Console directly, pulls thousands of queries, and returns a full period-over-period read: rising queries, declining pages, new opportunities, in one run. The lesson is not that one tool is better. It's that you are not limited to what the vendor pre-built. You connect what you need."
 
-### [17] Demo — Video ad pipeline
+### [18] Demo — Video ad pipeline
 **Say:** "Second one, harder. Build a TikTok ad from this product page: local-looking presenter, real photos, voiceover, walk me through the plan first. The simple assistant gives you a written plan, a script and a storyboard, and then you go execute it. You upload, you configure, you stitch it together. The agentic version does it. It reads the real page, writes the script, calls the video tools for the avatar and voiceover, and runs the whole pipeline, scrape to script to render to assembly, then hands you something to approve. That is the shift in one picture. The AI moves from advisor to operator. It stops describing the plan and starts running it."
 
-### [18] The Claude folder — business context, persistent
+### [19] The Claude folder — business context, persistent
 **Say:** "You've seen it work. Now the part nobody shows you, which is what makes it reliable instead of a party trick. All of it, your rules, your skills, your specialists, lives in one structured folder the AI reads at the start of every session. A constitution file with your standards. Permissions and automatic triggers. A folder of skills, a folder of agents. The base model is identical for everyone on earth. This folder is what makes it yours. Without it, you re-brief the AI every morning. With it, it shows up already knowing you."
 
-### [19] Context window — what it is
+### [20] Context window — what it is
 **Say:** "Here's the one concept underneath almost every frustration people have with AI: why does it forget things, get inconsistent, drop steps halfway through. It traces back to the context window. Hold it simply: it's the total text the AI can see while it answers, including its own answer. Working memory for this one conversation. What it is not: not long-term knowledge, not unlimited, not persistent. It wipes at the end of the session unless you deliberately saved something. A working memory, not a brain. Hold that distinction and the next two slides explain a lot of pain you've felt."
 
-### [20] Signs your context is congested
+### [21] Signs your context is congested
 **Say:** "So how do you know you've overloaded that memory. You can see it. The AI forgets an instruction from twenty turns ago. Output gets shorter and more generic. It re-asks for something you already told it. The brand voice drifts. The trap is that your instinct is to repeat yourself, to add more instructions, and adding more is exactly what caused it. The fix is to offload or reset and start clean. This is not a bug. It's the physics of a finite working memory, and once you see it that way you stop fighting it the wrong way."
 
-### [21] Context rot
+### [22] Context rot
 **Say:** "Here's the counter-intuitive part that even technical people miss. Bigger is not better. Performance degrades as the window fills, even when everything still technically fits. Look at the numbers. Clean at the start, the error rate is two percent. By turn fifteen it's seventy-five. By turn twenty it's rotting. Think of a desk. When it's buried, you don't work better just because everything is still technically on it. To prevent it: keep the rules file short. Split procedures into skills that load only when needed. Save your plan to a file so it survives a reset. And push heavy research to a sub-agent. That, by the way, is the real reason agents get their own workspace. The mess never reaches your desk."
 
-### [22] Post-mortem — we rebuilt the skill
+### [23] Post-mortem — we rebuilt the skill
 **Say:** "Let me show you what happens when you ignore all of that, because we did, and it cost us a client report. We had one giant skill, one agent, eighteen hundred lines, all in a single context window. By the time it reached the part that wrote the report, the window was jammed with raw data and the quality rules from the top were drowned out. It shipped numbers that were hallucinated. We did not patch it. We rebuilt the architecture. A small orchestrator hands each phase to its own specialist with a fresh workspace, and hard-coded Python checks between the phases verify the data before it moves on. Now it cannot get a false number past a check that fails. The skill was never the problem. The architecture was. When AI output goes wrong, look at how the work is structured, not just the prompt."
 
-### [23] The learnings loop
+### [24] The learnings loop
 **Say:** "This next part surprised me, because the system gets better over time without anyone retraining a model. A small program fires automatically every time the AI finishes a task. It catches what went wrong, or what worked, and writes one line back into that constitution file. The next session walks in already knowing the lesson. Notice what this is not. It is not fine-tuning. No retraining, no GPUs, no data team. It only changes what the system knows before it starts, and a shell script can do that. Most AI setups stay flat: run ten looks like run one. This one is measurably sharper at run ten, because every correction is logged and never repeated. The work compounds. That's the line between a tool you use and a system you build."
 
-### [24] The framework — Tools, Skills, Verification
+### [25] The framework — Tools, Skills, Verification
 **Say:** "Let's pull this up to what matters if you run a team, because this is where most companies quietly stall. Three layers to an AI advantage. Tools: you buy access. Days. Your competitor buys the same thing tomorrow. Skills: you build the workflows. A capable team learns that in a quarter. So neither of those is your advantage — they're table stakes. The third layer is the one that takes a year, and I almost called it 'permission'. That's the wrong word. The hard part isn't getting permission to use agents. It's earning enough proof — verification — that you can stop supervising them. Look at the numbers. Eighty percent of companies use AI; fewer than ten percent have scaled agents in even one function. Only six percent fully trust an agent to run a core process without a human checking. And trust in autonomous agents actually dropped this year, forty-three to twenty-seven, because the moment it got real, leaders got nervous. That gap is the whole game. The question is almost never 'can the agent do it' — it usually can. It's 'can I prove it's reliable, and who's accountable when it's wrong.' Until you answer that, you keep a human on every step, and you get the cost of an agent at the speed of a committee. Ethan Mollick, here at Wharton, has a name for the flip side: secret cyborgs. More than half of AI users already hide their usage — because they don't trust how the org will react. Same trust deficit, both directions. Tools are bought. Skills are built. Verification is earned — and it's the only one your competitor can't buy. That's where the year goes, and that's where the advantage is."
 
-### [25] Point AI at revenue, not headcount
+### [26] Point AI at revenue, not headcount
 **Say:** "Here's where I'll be blunt, because most leadership teams get this backwards. They point AI at headcount, at cost, and that's the wrong target. Cost takeout is one-time and bounded — you can only ever save what you already spend, and then it stops. Revenue growth compounds. Point this at revenue. Two ways this goes wrong. One, the layoff overdose: you bank the savings, take a one-time cut, and gut the capacity you'd need to grow. Two, transformation theater: you hire a team to 'run the AI transformation', which bolts a new bureaucracy onto the old one. The people who should wield this are your revenue operators, not a central AI office. The winners in that ICONIQ data are not leaner. They make about twice the net-new revenue per person. Efficiency is a byproduct. Make growth the goal."
 
-### [26] The org chart is being rewritten
+### [27] The org chart is being rewritten
 **Say:** "Which brings me to the line I want you to take home. The org chart is being rewritten. The work moves from doing to directing. One operator runs a system of agentic workflows. The thing that holds the value is not the tool and not the headcount. It's the reusable workflow itself. You don't have to build these yourself. But the leaders who understand them are the ones who decide who does, and how their teams get shaped around the work. That decision is being made right now."
 
-### [27] Team orchestration — Git is the new Notion
+### [28] Team orchestration — Git is the new Notion
 **Say:** "One practical note on how teams coordinate all this, because people assume it needs heavy new software. It doesn't. The coordination layer is five commands, smaller than Notion, and it's the same version control engineers have used for decades. Pull is hit refresh. Status is what changed. Commit is save a version with a note. Push is share. Log is the full history of who changed what and when. Without something like this, you end up with a hundred copies of the same report, everyone doing the same thing slightly differently. With it, the team works off one source of truth. The coordination problem is already solved. You just have to adopt the solution."
 
-### [28] Thank you
+### [29] Thank you
 **Say:** "So that's the arc. The shift is real and already two years in. The building blocks are skills and agents, held together by one structured folder. What makes it reliable is respecting the context window and letting the work compound. The thing that decides who wins is not the technology. It's trust — earning enough proof that an agent is reliable to let it act without you checking every step. Most companies don't have a technology problem. They have a verification problem. Thank you. The QR code is my LinkedIn if you'd like to keep talking, and I'd like to hear what you build."
 
 ---
